@@ -3,9 +3,9 @@ name: CI
 
 on:
   push:
-    branches: [main, master] # master listed until the default-branch rename lands
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
 
 jobs:
   build-test:
