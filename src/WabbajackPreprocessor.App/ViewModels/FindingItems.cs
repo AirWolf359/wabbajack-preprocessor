@@ -1,10 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using WabbajackPreprocessor.App.Localization;
+using WabbajackPreprocessor.Core;
 using WabbajackPreprocessor.Core.Analysis;
 using WabbajackPreprocessor.Core.Settings;
 
 namespace WabbajackPreprocessor.App.ViewModels;
 
-/// <summary>Row for the "stale entries" tab: a tag-list entry that can be removed.</summary>
+/// <summary>Row for the "stale entries" and "redundant Always Enabled" tabs.</summary>
 public partial class StaleEntryItem : ObservableObject
 {
     public StaleEntryItem(StaleEntry finding)
@@ -19,29 +21,32 @@ public partial class StaleEntryItem : ObservableObject
     public string Entry => Finding.Entry;
 
     /// <summary>Shown only for findings whose reason varies per row (redundant
-    /// AlwaysEnabled names the enabling profile's mod); generic reasons live in the
-    /// sub-group header instead.</summary>
-    public string Detail => Finding.Kind == StaleEntryKind.RedundantAlwaysEnabled ? Finding.Reason : "";
+    /// AlwaysEnabled names the mod); generic reasons live in the sub-group header.</summary>
+    public string Detail => Finding.Kind == StaleEntryKind.RedundantAlwaysEnabled
+        ? L.F("RedundantReasonFmt", RelPaths.Split(Finding.Entry).ElementAtOrDefault(1) ?? Finding.Entry)
+        : "";
 
     public bool HasDetail => Detail.Length > 0;
+
+    public string RemoveAccessibleName => Finding.Kind == StaleEntryKind.RedundantAlwaysEnabled
+        ? L.F("RemoveAETagAccessibleFmt", Finding.Entry)
+        : L.F("RemoveEntryAccessibleFmt", Finding.Entry);
 
     [ObservableProperty]
     private bool _remove;
 }
 
-/// <summary>A kind-based sub-list within one tag list's section (e.g. the missing
-/// entries vs. the redundant ones under Always enabled).</summary>
+/// <summary>A kind-based sub-list within one tag list's section.</summary>
 public sealed class StaleSubGroup(StaleEntryKind kind, IReadOnlyList<StaleEntryItem> items)
 {
     public IReadOnlyList<StaleEntryItem> Items { get; } = items;
 
-    public string Header { get; } = kind switch
+    public string Header { get; } = L.F("TabCountFmt", kind switch
     {
-        StaleEntryKind.Missing => "No longer exists",
-        StaleEntryKind.Duplicate => "Duplicate entries",
-        StaleEntryKind.RedundantAlwaysEnabled => "Already enabled in a profile — the tag currently has no effect",
+        StaleEntryKind.Missing => L.Get("SubMissing"),
+        StaleEntryKind.Duplicate => L.Get("SubDuplicate"),
         _ => kind.ToString(),
-    } + $" ({items.Count})";
+    }, items.Count);
 }
 
 /// <summary>One tag list's section on the "stale entries" tab.</summary>
@@ -50,14 +55,14 @@ public sealed class StaleGroup
     public StaleGroup(TagList list, IReadOnlyList<StaleEntryItem> items)
     {
         Items = items;
-        Header = list switch
+        Header = L.F("TabCountFmt", list switch
         {
-            TagList.NoMatchInclude => "No match include",
-            TagList.Include => "Include",
-            TagList.Ignore => "Ignore",
-            TagList.AlwaysEnabled => "Always enabled",
+            TagList.NoMatchInclude => L.Get("ListNoMatchInclude"),
+            TagList.Include => L.Get("ListInclude"),
+            TagList.Ignore => L.Get("ListIgnore"),
+            TagList.AlwaysEnabled => L.Get("ListAlwaysEnabled"),
             _ => list.ToString(),
-        } + $" ({items.Count})";
+        }, items.Count);
         SubGroups = items
             .GroupBy(i => i.Finding.Kind)
             .OrderBy(g => g.Key)
@@ -77,7 +82,12 @@ public sealed class StaleGroup
 public partial class DisabledModItem(DisabledModFinding finding) : ObservableObject
 {
     public string ModName => finding.ModName;
-    public string Note => finding.Note;
+
+    public string Note => finding.DisabledInProfiles.Count > 0
+        ? L.F("DisabledInFmt", string.Join(", ", finding.DisabledInProfiles))
+        : L.Get("NotListedNote");
+
+    public string MarkAccessibleName => L.F("MarkAEAccessibleFmt", finding.ModName);
 
     [ObservableProperty]
     private bool _markAlwaysEnabled;
@@ -86,7 +96,8 @@ public partial class DisabledModItem(DisabledModFinding finding) : ObservableObj
 /// <summary>Row for the "no matching download" tab.</summary>
 public partial class MissingDownloadItem : ObservableObject
 {
-    public static readonly string[] Actions = ["Untagged", "Include", "No match include"];
+    public static readonly string[] Actions =
+        [L.Get("ActionUntagged"), L.Get("ActionInclude"), L.Get("ActionNoMatchInclude")];
 
     public MissingDownloadItem(MissingDownloadFinding finding)
     {
@@ -106,15 +117,23 @@ public partial class MissingDownloadItem : ObservableObject
     public MissingDownloadFinding Finding { get; }
 
     public string ModName => Finding.ModName;
-    public string Reason => Finding.Reason;
 
-    public string CurrentStatus => "Currently: " + Finding switch
+    public string Reason => Finding.Reason switch
     {
-        { TaggedInclude: true, TaggedNoMatchInclude: true } => "Include + No match include",
-        { TaggedInclude: true } => "Include",
-        { TaggedNoMatchInclude: true } => "No match include",
-        _ => "untagged",
+        MissingDownloadReason.NoMetaIni => L.Get("ReasonNoMetaIni"),
+        MissingDownloadReason.ArchiveNotFound => L.F("ReasonArchiveNotFoundFmt", Finding.InstallationFile),
+        _ => L.Get("ReasonNoInstallationFile"),
     };
+
+    public string CurrentStatus => L.F("CurrentlyFmt", Finding switch
+    {
+        { TaggedInclude: true, TaggedNoMatchInclude: true } => L.Get("TagStatusBoth"),
+        { TaggedInclude: true } => L.Get("TagStatusInclude"),
+        { TaggedNoMatchInclude: true } => L.Get("TagStatusNoMatchInclude"),
+        _ => L.Get("TagStatusUntagged"),
+    });
+
+    public string TagActionAccessibleName => L.F("TagActionAccessibleFmt", Finding.ModName);
 
     /// <summary>Patch-mod flag: files that also exist in downloaded mods are typically
     /// stored as binary diffs, and config/text files are inlined automatically — neither
@@ -124,23 +143,21 @@ public partial class MissingDownloadItem : ObservableObject
         get
         {
             if (Finding.TotalFileCount == 0)
-                return "Mod folder contains no files.";
+                return L.Get("OverlapNoFiles");
             if (Finding.HandledFileCount == 0)
                 return "";
 
             var how = new List<string>();
             if (Finding.OverlapFileCount > 0)
-                how.Add($"{Finding.OverlapFileCount} also exist in downloaded mods (stored as binary diffs)");
+                how.Add(L.F("OverlapDiffPartFmt", Finding.OverlapFileCount));
             if (Finding.AutoInlinedFileCount > 0)
-                how.Add($"{Finding.AutoInlinedFileCount} are config/text files Wabbajack always inlines");
+                how.Add(L.F("OverlapConfigPartFmt", Finding.AutoInlinedFileCount));
 
             var unique = Finding.TotalFileCount - Finding.HandledFileCount;
             return unique == 0
-                ? $"⚑ All {Finding.TotalFileCount} file(s) are handled without a tag: {string.Join("; ", how)}. " +
-                  "A tag isn't strictly needed (No match include is safe insurance; avoid Include)."
-                : $"⚑ {Finding.HandledFileCount} of {Finding.TotalFileCount} files are handled without a tag " +
-                  $"({string.Join("; ", how)}) — {unique} unique file(s) still need inlining " +
-                  $"(e.g. {string.Join(", ", Finding.UniqueFileSample)}); No match include recommended.";
+                ? L.F("OverlapAllFmt", Finding.TotalFileCount, string.Join("; ", how))
+                : L.F("OverlapPartialFmt", Finding.HandledFileCount, Finding.TotalFileCount,
+                    string.Join("; ", how), unique, string.Join(", ", Finding.UniqueFileSample));
         }
     }
 

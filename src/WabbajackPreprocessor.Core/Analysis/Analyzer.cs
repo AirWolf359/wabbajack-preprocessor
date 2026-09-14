@@ -11,7 +11,7 @@ public static class Analyzer
 {
     public static AnalysisResult Analyze(CompilerSettings settings, Mo2Instance instance)
     {
-        var warnings = new List<string>();
+        var warnings = new List<AnalysisWarning>();
 
         // Selected profiles: the main profile plus AdditionalProfiles, kept when present on disk.
         var profilesUsed = new List<string>();
@@ -20,15 +20,15 @@ public static class Analyzer
             if (instance.Profiles.ContainsKey(profile))
                 profilesUsed.Add(profile);
             else
-                warnings.Add($"Profile '{profile}' from the settings file has no profiles\\{profile}\\modlist.txt in the instance.");
+                warnings.Add(new AnalysisWarning(WarningKind.ProfileNotFound, profile));
         }
         if (profilesUsed.Count == 0)
-            warnings.Add("None of the selected profiles were found; disabled-mod and download checks are limited.");
+            warnings.Add(new AnalysisWarning(WarningKind.NoProfilesFound));
 
-        // A mod counts as enabled if any selected profile's modlist enables it (Wabbajack rules:
-        // '+' lines and separators). Track listed-anywhere separately to spot unlisted folders.
+        // A mod counts as enabled if any selected profile's modlist enables it (Wabbajack
+        // rules: '+' lines and separators). disabledIn records the profiles that list a
+        // mod as disabled; a mod in neither structure is unlisted everywhere.
         var enabledMods = new HashSet<string>(RelPaths.Comparer);
-        var listedMods = new HashSet<string>(RelPaths.Comparer);
         var disabledIn = new Dictionary<string, List<string>>(RelPaths.Comparer);
         foreach (var profile in profilesUsed)
         {
@@ -36,7 +36,6 @@ public static class Analyzer
             {
                 if (entry.Kind == ModlistEntryKind.Foreign)
                     continue;
-                listedMods.Add(entry.Name);
                 if (entry.WabbajackEnabled)
                     enabledMods.Add(entry.Name);
                 else
@@ -48,15 +47,15 @@ public static class Analyzer
 
         var (staleEntries, redundantAlwaysEnabled) =
             FindStaleEntries(settings, instance, enabledMods, disabledIn);
-        var disabledMods = FindDisabledMods(settings, instance, enabledMods, listedMods, disabledIn);
+        var disabledMods = FindDisabledMods(settings, instance, enabledMods, disabledIn);
         var modsWithoutDownload = FindModsWithoutDownload(settings, instance, enabledMods, warnings);
 
         var metalessCount = instance.Downloads.Count(d => !d.HasMeta);
         if (metalessCount > 0)
-            warnings.Add($"{metalessCount} file(s) in the downloads folder have no .meta sidecar; Wabbajack will try to infer their source or ignore them.");
+            warnings.Add(new AnalysisWarning(WarningKind.DownloadsWithoutMeta, Count: metalessCount));
         var unknownCount = instance.Downloads.Count(d => d.UnknownArchive);
         if (unknownCount > 0)
-            warnings.Add($"{unknownCount} download .meta file(s) are marked unknownArchive=true; compilation fails if any matched file needs them.");
+            warnings.Add(new AnalysisWarning(WarningKind.UnknownArchiveMetas, Count: unknownCount));
 
         return new AnalysisResult
         {
@@ -86,16 +85,14 @@ public static class Analyzer
 
                 if (!seen.Add(normalized))
                 {
-                    stale.Add(new StaleEntry(list, i, entry, StaleEntryKind.Duplicate,
-                        "Duplicate of an earlier entry in the same list."));
+                    stale.Add(new StaleEntry(list, i, entry, StaleEntryKind.Duplicate));
                     continue;
                 }
 
                 var fullPath = Path.Combine(instance.SourcePath, normalized);
                 if (!File.Exists(fullPath) && !Directory.Exists(fullPath))
                 {
-                    stale.Add(new StaleEntry(list, i, entry, StaleEntryKind.Missing,
-                        "No such file or folder under the source directory."));
+                    stale.Add(new StaleEntry(list, i, entry, StaleEntryKind.Missing));
                     continue;
                 }
 
@@ -112,8 +109,7 @@ public static class Analyzer
                         && enabledMods.Contains(parts[1])
                         && !disabledIn.ContainsKey(parts[1]))
                     {
-                        redundant.Add(new StaleEntry(list, i, entry, StaleEntryKind.RedundantAlwaysEnabled,
-                            $"Mod '{parts[1]}' is enabled in every selected profile that lists it, so the tag currently has no effect."));
+                        redundant.Add(new StaleEntry(list, i, entry, StaleEntryKind.RedundantAlwaysEnabled));
                     }
                 }
             }
@@ -123,8 +119,7 @@ public static class Analyzer
 
     private static List<DisabledModFinding> FindDisabledMods(
         CompilerSettings settings, Mo2Instance instance,
-        HashSet<string> enabledMods, HashSet<string> listedMods,
-        Dictionary<string, List<string>> disabledIn)
+        HashSet<string> enabledMods, Dictionary<string, List<string>> disabledIn)
     {
         var findings = new List<DisabledModFinding>();
         foreach (var mod in instance.Mods)
@@ -136,20 +131,18 @@ public static class Analyzer
             if (RelPaths.IsCoveredBy(mod.RelativePath, settings.Ignore))
                 continue; // deliberately excluded
 
-            var note = listedMods.Contains(mod.Name)
-                ? $"Disabled in: {string.Join(", ", disabledIn.GetValueOrDefault(mod.Name) ?? [])}"
-                : "Not listed in any selected profile's modlist.txt.";
-            findings.Add(new DisabledModFinding(mod.Name, note));
+            findings.Add(new DisabledModFinding(mod.Name,
+                disabledIn.GetValueOrDefault(mod.Name) ?? []));
         }
         return findings;
     }
 
     private static List<MissingDownloadFinding> FindModsWithoutDownload(
         CompilerSettings settings, Mo2Instance instance,
-        HashSet<string> enabledMods, List<string> warnings)
+        HashSet<string> enabledMods, List<AnalysisWarning> warnings)
     {
         if (!Directory.Exists(instance.DownloadsPath))
-            warnings.Add($"Downloads folder '{instance.DownloadsPath}' does not exist.");
+            warnings.Add(new AnalysisWarning(WarningKind.DownloadsFolderMissing, instance.DownloadsPath));
 
         var downloadsByName = new HashSet<string>(
             instance.Downloads.Select(d => d.FileName), RelPaths.Comparer);
@@ -222,11 +215,14 @@ public static class Analyzer
 
             var installationFile = mod.InstallationFile?.Trim();
             var reason = !mod.HasMetaIni
-                ? "No meta.ini — likely a hand-created or generated mod folder."
+                ? MissingDownloadReason.NoMetaIni
                 : !string.IsNullOrEmpty(installationFile)
-                    ? $"Installed from '{installationFile}', which is not in the downloads folder."
-                    : "meta.ini records no installation archive.";
-            findings.Add(new MissingDownloadFinding(mod.Name, reason, taggedInclude, taggedNoMatchInclude));
+                    ? MissingDownloadReason.ArchiveNotFound
+                    : MissingDownloadReason.NoInstallationFile;
+            findings.Add(new MissingDownloadFinding(mod.Name, reason, taggedInclude, taggedNoMatchInclude)
+            {
+                InstallationFile = reason == MissingDownloadReason.ArchiveNotFound ? installationFile : null,
+            });
         }
 
         return AddFileOverlap(instance, findings, downloadedMods);

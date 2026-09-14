@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="WindowTitle" xml:space="preserve"><value>Wabbajack Compiler Settings Preprocessor</value></data>
+  <data name="MenuFile" xml:space="preserve"><value>_File</value></data>
+  <data name="MenuOpenSettingsFile" xml:space="preserve"><value>_Open settings file…</value></data>
+  <data name="MenuExit" xml:space="preserve"><value>E_xit</value></data>
+  <data name="MenuTools" xml:space="preserve"><value>_Tools</value></data>
+  <data name="MenuSettingsItem" xml:space="preserve"><value>_Settings…</value></data>
+  <data name="MenuHelp" xml:space="preserve"><value>_Help</value></data>
+  <data name="MenuGitHub" xml:space="preserve"><value>_GitHub repository</value></data>
+  <data name="MenuAbout" xml:space="preserve"><value>_About…</value></data>
+
+  <data name="SettingsFileLabel" xml:space="preserve"><value>Compiler settings file (.compiler_settings)</value></data>
+  <data name="SettingsFilePlaceholder" xml:space="preserve"><value>Path to your &lt;modlist&gt;.compiler_settings file</value></data>
+  <data name="SettingsFileAccessibleName" xml:space="preserve"><value>Compiler settings file path</value></data>
+  <data name="BrowseButton" xml:space="preserve"><value>Browse…</value></data>
+  <data name="AnalyzeButton" xml:space="preserve"><value>Analyze</value></data>
+  <data name="ApplyButton" xml:space="preserve"><value>Apply changes</value></data>
+  <data name="StatusAccessibleName" xml:space="preserve"><value>Status</value></data>
+  <data name="StatusInitial" xml:space="preserve"><value>Select a .compiler_settings file and click Analyze.</value></data>
+  <data name="FilePickerTitle" xml:space="preserve"><value>Select a compiler settings file</value></data>
+  <data name="FilePickerFilterName" xml:space="preserve"><value>Wabbajack compiler settings</value></data>
+
+  <data name="TabStalePlain" xml:space="preserve"><value>Stale entries</value></data>
+  <data name="TabRedundantPlain" xml:space="preserve"><value>Redundant Always Enabled</value></data>
+  <data name="TabDisabledPlain" xml:space="preserve"><value>Disabled mods</value></data>
+  <data name="TabNoDownloadPlain" xml:space="preserve"><value>No download</value></data>
+  <data name="TabWarningsPlain" xml:space="preserve"><value>Warnings</value></data>
+  <data name="TabCountFmt" xml:space="preserve"><value>{0} ({1})</value></data>
+
+  <data name="DescStale" xml:space="preserve"><value>Dead references in the settings file's tag lists: entries pointing at files or folders that no longer exist, and duplicates. Removing them never changes what gets compiled. Checked entries are removed when you apply.</value></data>
+  <data name="DescRedundant" xml:space="preserve"><value>Mods still in the list whose Always Enabled tag currently does nothing, because the mod is enabled in every selected profile that lists it. (A mod disabled in even one selected profile is not shown — there the tag preserves that profile's disabled line.) Checking a mod removes its tag when you apply; keep the tag if you might disable the mod later.</value></data>
+  <data name="DescDisabled" xml:space="preserve"><value>Mods that are disabled in every selected profile. Wabbajack skips them unless you mark them Always Enabled (their files ship, still disabled, for users to opt into).</value></data>
+  <data name="DescNoDownload" xml:space="preserve"><value>Mods that will be compiled but can't be traced to a download archive. Their files must be inlined into the modlist: Include embeds them unconditionally; No match include embeds only what nothing else matches (the usual choice for generated content). Each row shows the mod's current tag; change the dropdown to retag or untag it.</value></data>
+
+  <data name="ListNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="ListInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="ListIgnore" xml:space="preserve"><value>Ignore</value></data>
+  <data name="ListAlwaysEnabled" xml:space="preserve"><value>Always enabled</value></data>
+  <data name="SubMissing" xml:space="preserve"><value>No longer exists</value></data>
+  <data name="SubDuplicate" xml:space="preserve"><value>Duplicate entries</value></data>
+  <data name="RedundantReasonFmt" xml:space="preserve"><value>Mod '{0}' is enabled in every selected profile that lists it, so the tag currently has no effect.</value></data>
+  <data name="RemoveEntryAccessibleFmt" xml:space="preserve"><value>Remove {0} from the settings file</value></data>
+  <data name="RemoveAETagAccessibleFmt" xml:space="preserve"><value>Remove the Always Enabled tag from {0}</value></data>
+  <data name="RemoveAETagTooltip" xml:space="preserve"><value>Remove the Always Enabled tag</value></data>
+
+  <data name="DisabledInFmt" xml:space="preserve"><value>Disabled in: {0}</value></data>
+  <data name="NotListedNote" xml:space="preserve"><value>Not listed in any selected profile's modlist.txt.</value></data>
+  <data name="MarkAEAccessibleFmt" xml:space="preserve"><value>Mark {0} as Always Enabled</value></data>
+  <data name="MarkAETooltip" xml:space="preserve"><value>Add to AlwaysEnabled</value></data>
+
+  <data name="ReasonNoMetaIni" xml:space="preserve"><value>No meta.ini — likely a hand-created or generated mod folder.</value></data>
+  <data name="ReasonArchiveNotFoundFmt" xml:space="preserve"><value>Installed from '{0}', which is not in the downloads folder.</value></data>
+  <data name="ReasonNoInstallationFile" xml:space="preserve"><value>meta.ini records no installation archive.</value></data>
+  <data name="CurrentlyFmt" xml:space="preserve"><value>Currently: {0}</value></data>
+  <data name="TagStatusInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="TagStatusNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="TagStatusBoth" xml:space="preserve"><value>Include + No match include</value></data>
+  <data name="TagStatusUntagged" xml:space="preserve"><value>untagged</value></data>
+  <data name="ActionUntagged" xml:space="preserve"><value>Untagged</value></data>
+  <data name="ActionInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="ActionNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="TagActionAccessibleFmt" xml:space="preserve"><value>Tag action for {0}</value></data>
+  <data name="OverlapNoFiles" xml:space="preserve"><value>Mod folder contains no files.</value></data>
+  <data name="OverlapDiffPartFmt" xml:space="preserve"><value>{0} also exist in downloaded mods (stored as binary diffs)</value></data>
+  <data name="OverlapConfigPartFmt" xml:space="preserve"><value>{0} are config/text files Wabbajack always inlines</value></data>
+  <data name="OverlapAllFmt" xml:space="preserve"><value>⚑ All {0} file(s) are handled without a tag: {1}. A tag isn't strictly needed (No match include is safe insurance; avoid Include).</value></data>
+  <data name="OverlapPartialFmt" xml:space="preserve"><value>⚑ {0} of {1} files are handled without a tag ({2}) — {3} unique file(s) still need inlining (e.g. {4}); No match include recommended.</value></data>
+
+  <data name="WarnProfileNotFoundFmt" xml:space="preserve"><value>Profile '{0}' from the settings file has no profiles\{0}\modlist.txt in the instance.</value></data>
+  <data name="WarnNoProfiles" xml:space="preserve"><value>None of the selected profiles were found; disabled-mod and download checks are limited.</value></data>
+  <data name="WarnDownloadsFolderMissingFmt" xml:space="preserve"><value>Downloads folder '{0}' does not exist.</value></data>
+  <data name="WarnDownloadsWithoutMetaFmt" xml:space="preserve"><value>{0} file(s) in the downloads folder have no .meta sidecar; Wabbajack will try to infer their source or ignore them.</value></data>
+  <data name="WarnUnknownArchiveMetasFmt" xml:space="preserve"><value>{0} download .meta file(s) are marked unknownArchive=true; compilation fails if any matched file needs them.</value></data>
+
+  <data name="InstanceSummaryFmt" xml:space="preserve"><value>{0} — source: {1} — {2} mods, {3} downloads</value></data>
+  <data name="ProfilesSummaryFmt" xml:space="preserve"><value>Default profile: {0}   •   Additional profiles: {1}</value></data>
+  <data name="ProfileNoneSet" xml:space="preserve"><value>(none set)</value></data>
+  <data name="ProfileNotFoundFmt" xml:space="preserve"><value>{0} (not found on disk!)</value></data>
+  <data name="AdditionalNone" xml:space="preserve"><value>none</value></data>
+
+  <data name="StatusFileNotFoundFmt" xml:space="preserve"><value>File not found: {0}</value></data>
+  <data name="StatusAnalysisFailedFmt" xml:space="preserve"><value>Analysis failed: {0}</value></data>
+  <data name="StatusNothingToClean" xml:space="preserve"><value>Analysis complete: nothing to clean up.</value></data>
+  <data name="StatusAnalysisSummaryFmt" xml:space="preserve"><value>Analysis complete: {0} stale entries, {1} redundant Always Enabled tags, {2} disabled mods, {3} mods without a download.</value></data>
+  <data name="StatusNoChanges" xml:space="preserve"><value>No changes selected.</value></data>
+  <data name="StatusSavedFmt" xml:space="preserve"><value>Saved {0} change(s) to {1}.</value></data>
+  <data name="StatusSavedBackupFmt" xml:space="preserve"><value>Saved {0} change(s). Backup: {1}</value></data>
+  <data name="StatusSaveFailedFmt" xml:space="preserve"><value>Save failed: {0}</value></data>
+
+  <data name="SettingsTitle" xml:space="preserve"><value>Settings</value></data>
+  <data name="ThemeLabel" xml:space="preserve"><value>Theme</value></data>
+  <data name="ThemeSystem" xml:space="preserve"><value>System</value></data>
+  <data name="ThemeDark" xml:space="preserve"><value>Dark</value></data>
+  <data name="ThemeLight" xml:space="preserve"><value>Light</value></data>
+  <data name="SettingsThemeNote" xml:space="preserve"><value>System follows the Windows app mode. Changes apply immediately and are remembered.</value></data>
+  <data name="ColorThemeAccessibleName" xml:space="preserve"><value>Color theme</value></data>
+  <data name="CloseButton" xml:space="preserve"><value>Close</value></data>
+
+  <data name="AboutTitle" xml:space="preserve"><value>About</value></data>
+  <data name="AboutAppName" xml:space="preserve"><value>Wabbajack Compiler Settings Preprocessor</value></data>
+  <data name="AboutVersionFmt" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="AboutDescription" xml:space="preserve"><value>A cleanup tool for Wabbajack modlist authors. A supplement to Wabbajack, not a replacement — compile your list in Wabbajack itself. MIT licensed.</value></data>
+  <data name="AboutRepoButton" xml:space="preserve"><value>GitHub repository</value></data>
+</root>

@@ -18,7 +18,7 @@ public partial class AboutWindow : Window
         var plus = version.IndexOf('+');
         if (plus > 0)
             version = version[..plus];
-        VersionText.Text = $"Version {version}";
+        VersionText.Text = Localization.L.F("AboutVersionFmt", version);
     }
 
     private async void OnRepoClicked(object? sender, RoutedEventArgs e) =>
