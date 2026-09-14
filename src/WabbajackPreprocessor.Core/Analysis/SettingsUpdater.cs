@@ -17,9 +17,16 @@ public sealed class SettingsUpdatePlan
     /// <summary>Mod names to add to NoMatchInclude (as <c>mods\&lt;name&gt;</c>).</summary>
     public List<string> MarkNoMatchInclude { get; } = [];
 
+    /// <summary>Mod names whose exact <c>mods\&lt;name&gt;</c> entry should leave Include.</summary>
+    public List<string> UntagInclude { get; } = [];
+
+    /// <summary>Mod names whose exact <c>mods\&lt;name&gt;</c> entry should leave NoMatchInclude.</summary>
+    public List<string> UntagNoMatchInclude { get; } = [];
+
     public bool IsEmpty =>
         RemoveEntries.Count == 0 && MarkAlwaysEnabled.Count == 0
-        && MarkInclude.Count == 0 && MarkNoMatchInclude.Count == 0;
+        && MarkInclude.Count == 0 && MarkNoMatchInclude.Count == 0
+        && UntagInclude.Count == 0 && UntagNoMatchInclude.Count == 0;
 }
 
 public static class SettingsUpdater
@@ -51,10 +58,23 @@ public static class SettingsUpdater
             }
         }
 
+        RemoveMods(settings, TagList.Include, plan.UntagInclude, changes);
+        RemoveMods(settings, TagList.NoMatchInclude, plan.UntagNoMatchInclude, changes);
         AddMods(settings, TagList.AlwaysEnabled, plan.MarkAlwaysEnabled, changes);
         AddMods(settings, TagList.Include, plan.MarkInclude, changes);
         AddMods(settings, TagList.NoMatchInclude, plan.MarkNoMatchInclude, changes);
         return changes;
+    }
+
+    private static void RemoveMods(CompilerSettings settings, TagList list, List<string> modNames, List<string> changes)
+    {
+        var entries = settings.GetTagList(list);
+        foreach (var modName in modNames)
+        {
+            var entry = $"mods\\{modName}";
+            if (entries.RemoveAll(e => RelPaths.AreEqual(e, entry)) > 0)
+                changes.Add($"Removed '{entry}' from {list}.");
+        }
     }
 
     private static void AddMods(CompilerSettings settings, TagList list, List<string> modNames, List<string> changes)

@@ -114,7 +114,7 @@
             <TabItem Header="{Binding DownloadsHeader}">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
-                               Text="Mods that will be compiled but can't be traced to a download archive. Their files must be inlined into the modlist: Include embeds them unconditionally; No match include embeds only what nothing else matches (the usual choice for generated content)." />
+                               Text="Mods that will be compiled but can't be traced to a download archive. Their files must be inlined into the modlist: Include embeds them unconditionally; No match include embeds only what nothing else matches (the usual choice for generated content). Each row shows the mod's current tag; change the dropdown to retag or untag it." />
                     <ScrollViewer>
                         <ItemsControl ItemsSource="{Binding DownloadItems}">
                             <ItemsControl.ItemTemplate>
@@ -124,6 +124,7 @@
                                             <StackPanel Grid.Column="0" Margin="0,0,8,0">
                                                 <TextBlock Classes="itemTitle" Text="{Binding ModName}" />
                                                 <TextBlock Classes="detail" Text="{Binding Reason}" />
+                                                <TextBlock FontSize="12" Text="{Binding CurrentStatus}" />
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" Width="170" VerticalAlignment="Top"
                                                       ItemsSource="{x:Static vm:MissingDownloadItem.Actions}"

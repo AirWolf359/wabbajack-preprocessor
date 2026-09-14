@@ -88,14 +88,18 @@ public sealed class AnalyzerTests : IDisposable
         Assert.Contains(result.DisabledMods, m => m.ModName == "Beta" && m.Note.Contains("Main"));
         Assert.Contains(result.DisabledMods, m => m.ModName == "Unlisted");
 
-        // Without download: NoDownload (archive gone) and Optional AE (AlwaysEnabled, no meta).
+        // Without download: NoDownload (archive gone), Optional AE (AlwaysEnabled, no meta),
+        // and HandMade (already tagged NoMatchInclude — listed with its current status).
         // Alpha links via installationFile, ByNexusIds via installedFiles IDs,
-        // HandMade is already tagged NoMatchInclude, Beta is disabled (not compiled).
-        Assert.Equal(2, result.ModsWithoutDownload.Count);
+        // Beta is disabled (not compiled).
+        Assert.Equal(3, result.ModsWithoutDownload.Count);
         Assert.Contains(result.ModsWithoutDownload, m =>
-            m.ModName == "NoDownload" && m.Reason.Contains("Vanished-999.7z"));
+            m.ModName == "NoDownload" && m.Reason.Contains("Vanished-999.7z")
+            && m is { TaggedInclude: false, TaggedNoMatchInclude: false });
         Assert.Contains(result.ModsWithoutDownload, m =>
             m.ModName == "Optional AE" && m.Reason.Contains("meta.ini"));
+        Assert.Contains(result.ModsWithoutDownload, m =>
+            m.ModName == "HandMade" && m is { TaggedInclude: false, TaggedNoMatchInclude: true });
 
         // Orphan.7z has no .meta -> warning.
         Assert.Contains(result.Warnings, w => w.Contains("no .meta"));
@@ -126,6 +130,27 @@ public sealed class AnalyzerTests : IDisposable
         // Re-adding an existing entry is a no-op.
         var again = new SettingsUpdatePlan();
         again.MarkAlwaysEnabled.Add("BETA");
+        Assert.Empty(SettingsUpdater.Apply(settings, again));
+    }
+
+    [Fact]
+    public void Updater_Untags_And_Retags_Mods()
+    {
+        var settings = MakeSettings(); // NoMatchInclude holds mods\HandMade twice (case dup)
+
+        // Move HandMade from NoMatchInclude to Include.
+        var plan = new SettingsUpdatePlan();
+        plan.UntagNoMatchInclude.Add("HandMade");
+        plan.MarkInclude.Add("HandMade");
+        var changes = SettingsUpdater.Apply(settings, plan);
+
+        Assert.Equal(2, changes.Count); // one removal (both case-dup entries), one add
+        Assert.DoesNotContain(settings.NoMatchInclude, e => e.Contains("Hand", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(["mods\\HandMade"], settings.Include);
+
+        // Untagging a mod with no entry is a no-op.
+        var again = new SettingsUpdatePlan();
+        again.UntagNoMatchInclude.Add("HandMade");
         Assert.Empty(SettingsUpdater.Apply(settings, again));
     }
 
