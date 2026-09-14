@@ -125,6 +125,9 @@
                                                 <TextBlock Classes="itemTitle" Text="{Binding ModName}" />
                                                 <TextBlock Classes="detail" Text="{Binding Reason}" />
                                                 <TextBlock FontSize="12" Text="{Binding CurrentStatus}" />
+                                                <TextBlock FontSize="12" TextWrapping="Wrap"
+                                                           Text="{Binding OverlapSummary}"
+                                                           IsVisible="{Binding HasOverlapSummary}" />
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" Width="170" VerticalAlignment="Top"
                                                       ItemsSource="{x:Static vm:MissingDownloadItem.Actions}"

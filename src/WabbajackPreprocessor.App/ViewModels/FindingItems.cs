@@ -65,6 +65,36 @@ public partial class MissingDownloadItem : ObservableObject
         _ => "untagged",
     };
 
+    /// <summary>Patch-mod flag: files that also exist in downloaded mods are typically
+    /// stored as binary diffs, and config/text files are inlined automatically — neither
+    /// needs a tag. Only the remaining unique files do.</summary>
+    public string OverlapSummary
+    {
+        get
+        {
+            if (Finding.TotalFileCount == 0)
+                return "Mod folder contains no files.";
+            if (Finding.HandledFileCount == 0)
+                return "";
+
+            var how = new List<string>();
+            if (Finding.OverlapFileCount > 0)
+                how.Add($"{Finding.OverlapFileCount} also exist in downloaded mods (stored as binary diffs)");
+            if (Finding.AutoInlinedFileCount > 0)
+                how.Add($"{Finding.AutoInlinedFileCount} are config/text files Wabbajack always inlines");
+
+            var unique = Finding.TotalFileCount - Finding.HandledFileCount;
+            return unique == 0
+                ? $"⚑ All {Finding.TotalFileCount} file(s) are handled without a tag: {string.Join("; ", how)}. " +
+                  "A tag isn't strictly needed (No match include is safe insurance; avoid Include)."
+                : $"⚑ {Finding.HandledFileCount} of {Finding.TotalFileCount} files are handled without a tag " +
+                  $"({string.Join("; ", how)}) — {unique} unique file(s) still need inlining " +
+                  $"(e.g. {string.Join(", ", Finding.UniqueFileSample)}); No match include recommended.";
+        }
+    }
+
+    public bool HasOverlapSummary => OverlapSummary.Length > 0;
+
     public int OriginalActionIndex { get; }
 
     public bool IsChanged => SelectedActionIndex != OriginalActionIndex;
