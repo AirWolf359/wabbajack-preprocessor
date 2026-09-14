@@ -36,8 +36,16 @@ jobs:
           --self-contained true
           -p:PublishSingleFile=true
           -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:DebugType=None
+          -p:DebugSymbols=false
           -p:Version=${{ steps.version.outputs.version }}
           --output publish
+
+      # NuGet-delivered native symbol files (e.g. libSkiaSharp.pdb) ignore
+      # DebugType and would double the zip size.
+      - name: Remove stray symbol files
+        shell: pwsh
+        run: Remove-Item publish\*.pdb -ErrorAction SilentlyContinue
 
       - name: Zip artifact
         shell: pwsh
