@@ -65,19 +65,33 @@
                     <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
                                Text="Entries in the settings file's tag lists that point at files or folders that no longer exist, duplicates, and Always Enabled tags that currently have no effect. Checked entries are removed when you apply." />
                     <ScrollViewer>
-                        <ItemsControl ItemsSource="{Binding StaleItems}">
+                        <ItemsControl ItemsSource="{Binding StaleGroups}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:StaleEntryItem">
-                                    <Border Classes="row">
-                                        <Grid ColumnDefinitions="Auto,*">
-                                            <CheckBox Grid.Column="0" VerticalAlignment="Top"
-                                                      IsChecked="{Binding Remove}" />
-                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                                                <TextBlock Classes="itemTitle" Text="{Binding Entry}" />
-                                                <TextBlock Classes="detail" Text="{Binding Detail}" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
+                                <DataTemplate x:DataType="vm:StaleGroup">
+                                    <StackPanel Margin="0,0,0,14">
+                                        <Border BorderThickness="0,0,0,2"
+                                                BorderBrush="{DynamicResource SystemAccentColor}"
+                                                Padding="0,0,0,4" Margin="0,6,0,0">
+                                            <TextBlock FontSize="15" FontWeight="SemiBold"
+                                                       Text="{Binding Header}" />
+                                        </Border>
+                                        <ItemsControl ItemsSource="{Binding Items}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:StaleEntryItem">
+                                                    <Border Classes="row">
+                                                        <Grid ColumnDefinitions="Auto,*">
+                                                            <CheckBox Grid.Column="0" VerticalAlignment="Top"
+                                                                      IsChecked="{Binding Remove}" />
+                                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                                                <TextBlock Classes="itemTitle" Text="{Binding Entry}" />
+                                                                <TextBlock Classes="detail" Text="{Binding Detail}" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
