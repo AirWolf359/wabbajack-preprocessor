@@ -1,0 +1,28 @@
+# Build + test on every push to the default branch and every PR targeting it.
+name: CI
+
+on:
+  push:
+    branches: [main, master] # master listed until the default-branch rename lands
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal

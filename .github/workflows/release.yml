@@ -1,0 +1,53 @@
+# Tag a commit vX.Y.Z to build a self-contained single-file Windows exe and
+# attach it to a GitHub Release (ready to upload to Nexus).
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Determine version from tag
+        id: version
+        shell: pwsh
+        run: '"version=$($env:GITHUB_REF_NAME -replace ''^v'', '''')" >> $env:GITHUB_OUTPUT'
+
+      - name: Test
+        run: dotnet test --configuration Release
+
+      - name: Publish single-file win-x64
+        run: >
+          dotnet publish src/WabbajackPreprocessor.App
+          --configuration Release
+          --runtime win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:Version=${{ steps.version.outputs.version }}
+          --output publish
+
+      - name: Zip artifact
+        shell: pwsh
+        run: Compress-Archive -Path publish\* -DestinationPath "WabbajackPreprocessor-${{ steps.version.outputs.version }}-win-x64.zip"
+
+      - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create "${{ github.ref_name }}"
+          "WabbajackPreprocessor-${{ steps.version.outputs.version }}-win-x64.zip"
+          --title "WabbajackPreprocessor ${{ steps.version.outputs.version }}"
+          --generate-notes

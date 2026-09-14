@@ -1,3 +1,5 @@
+![CI](https://github.com/AirWolf359/wabbajack-preprocessor/actions/workflows/ci.yml/badge.svg)
+
 This project is intended to be a preprocessor for the Wabbajack compiler settings file that is used to compile a mod list for games such as Skyrim or Fallout using the Wabbajack tool. The idea here is that, as you are developing a modlist, the compiler settings file that you create over the course of multiple revisions will become somewhat cluttered. It will have references to mods that are no longer part of the list, but it does not clean up those references itself. There are also additional tasks that you have to do when you are compiling the mod list in Wabbajack itself, such as marking mods as ignore, no match include, or always enabled.
 This project is intended to be a tool that will act as a pre-processor for the compiler settings file, and it will do multiple things:
 - Detect any mods that are referenced in the compiler settings file that are no longer present in the mod list and clean those up.
