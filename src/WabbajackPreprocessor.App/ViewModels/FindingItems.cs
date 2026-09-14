@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using WabbajackPreprocessor.Core.Analysis;
+using WabbajackPreprocessor.Core.Settings;
 
 namespace WabbajackPreprocessor.App.ViewModels;
 
@@ -16,10 +17,25 @@ public partial class StaleEntryItem : ObservableObject
     public StaleEntry Finding { get; }
 
     public string Entry => Finding.Entry;
-    public string Detail => $"{Finding.List} — {Finding.Reason}";
+    public string Detail => Finding.Reason; // the tag list is shown by the group header
 
     [ObservableProperty]
     private bool _remove;
+}
+
+/// <summary>One tag list's section on the "stale entries" tab.</summary>
+public sealed class StaleGroup(TagList list, IReadOnlyList<StaleEntryItem> items)
+{
+    public IReadOnlyList<StaleEntryItem> Items { get; } = items;
+
+    public string Header { get; } = list switch
+    {
+        TagList.NoMatchInclude => "No match include",
+        TagList.Include => "Include",
+        TagList.Ignore => "Ignore",
+        TagList.AlwaysEnabled => "Always enabled",
+        _ => list.ToString(),
+    } + $" ({items.Count})";
 }
 
 /// <summary>Row for the "disabled mods" tab.</summary>
