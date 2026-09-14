@@ -8,6 +8,7 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Width="950" Height="650"
+        MinWidth="860" MinHeight="480"
         Title="Wabbajack Compiler Settings Preprocessor">
 
     <Design.DataContext>
@@ -28,6 +29,34 @@
             <Setter Property="Padding" Value="8,6" />
             <Setter Property="BorderThickness" Value="0,0,0,1" />
             <Setter Property="BorderBrush" Value="#40808080" />
+        </Style>
+
+        <!-- Compact, unmistakably tab-shaped headers on a single non-wrapping strip
+             (the Fluent default renders headers as 24px heading text on a WrapPanel). -->
+        <Style Selector="TabControl">
+            <Setter Property="Padding" Value="0,8,0,0" />
+            <Setter Property="ItemsPanel">
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="4" />
+                </ItemsPanelTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="CornerRadius" Value="6,6,0,0" />
+        </Style>
+        <Style Selector="TabItem /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="#14808080" />
+            <Setter Property="CornerRadius" Value="6,6,0,0" />
+        </Style>
+        <Style Selector="TabItem:pointerover /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="#26808080" />
+        </Style>
+        <Style Selector="TabItem:selected /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="#38808080" />
         </Style>
     </Window.Styles>
 
