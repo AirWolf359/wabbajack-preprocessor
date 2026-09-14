@@ -75,19 +75,30 @@
                                             <TextBlock FontSize="15" FontWeight="SemiBold"
                                                        Text="{Binding Header}" />
                                         </Border>
-                                        <ItemsControl ItemsSource="{Binding Items}">
+                                        <ItemsControl ItemsSource="{Binding SubGroups}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate x:DataType="vm:StaleEntryItem">
-                                                    <Border Classes="row">
-                                                        <Grid ColumnDefinitions="Auto,*">
-                                                            <CheckBox Grid.Column="0" VerticalAlignment="Top"
-                                                                      IsChecked="{Binding Remove}" />
-                                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                                                                <TextBlock Classes="itemTitle" Text="{Binding Entry}" />
-                                                                <TextBlock Classes="detail" Text="{Binding Detail}" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </Border>
+                                                <DataTemplate x:DataType="vm:StaleSubGroup">
+                                                    <StackPanel>
+                                                        <TextBlock FontSize="13" FontWeight="SemiBold" Opacity="0.85"
+                                                                   Margin="0,8,0,2" Text="{Binding Header}" />
+                                                        <ItemsControl ItemsSource="{Binding Items}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate x:DataType="vm:StaleEntryItem">
+                                                                    <Border Classes="row">
+                                                                        <Grid ColumnDefinitions="Auto,*">
+                                                                            <CheckBox Grid.Column="0" VerticalAlignment="Top"
+                                                                                      IsChecked="{Binding Remove}" />
+                                                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                                                                <TextBlock Classes="itemTitle" Text="{Binding Entry}" />
+                                                                                <TextBlock Classes="detail" Text="{Binding Detail}"
+                                                                                           IsVisible="{Binding HasDetail}" />
+                                                                            </StackPanel>
+                                                                        </Grid>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
