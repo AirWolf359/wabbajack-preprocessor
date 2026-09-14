@@ -34,14 +34,21 @@
         </Style>
 
         <!-- Compact, unmistakably tab-shaped headers on a single non-wrapping strip
-             (the Fluent default renders headers as 24px heading text on a WrapPanel). -->
+             (the Fluent default renders headers as 24px heading text on a WrapPanel).
+             The selected tab shares its background with the content panel and sits
+             flush against it, so the pair reads as one connected surface; Fluent's
+             selection pipe (which hugged the label like an underline) is hidden. -->
         <Style Selector="TabControl">
-            <Setter Property="Padding" Value="0,8,0,0" />
+            <Setter Property="Padding" Value="12,10" />
             <Setter Property="ItemsPanel">
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" Spacing="4" />
                 </ItemsPanelTemplate>
             </Setter>
+        </Style>
+        <Style Selector="TabControl /template/ ContentPresenter#PART_SelectedContentHost">
+            <Setter Property="Background" Value="#20808080" />
+            <Setter Property="CornerRadius" Value="0,6,6,6" />
         </Style>
         <Style Selector="TabItem">
             <Setter Property="FontSize" Value="14" />
@@ -51,14 +58,17 @@
             <Setter Property="CornerRadius" Value="6,6,0,0" />
         </Style>
         <Style Selector="TabItem /template/ Border#PART_LayoutRoot">
-            <Setter Property="Background" Value="#14808080" />
+            <Setter Property="Background" Value="#10808080" />
             <Setter Property="CornerRadius" Value="6,6,0,0" />
         </Style>
         <Style Selector="TabItem:pointerover /template/ Border#PART_LayoutRoot">
-            <Setter Property="Background" Value="#26808080" />
+            <Setter Property="Background" Value="#1A808080" />
         </Style>
         <Style Selector="TabItem:selected /template/ Border#PART_LayoutRoot">
-            <Setter Property="Background" Value="#38808080" />
+            <Setter Property="Background" Value="#20808080" />
+        </Style>
+        <Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">
+            <Setter Property="IsVisible" Value="False" />
         </Style>
     </Window.Styles>
 
