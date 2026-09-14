@@ -46,7 +46,8 @@ public static class Analyzer
             }
         }
 
-        var staleEntries = FindStaleEntries(settings, instance, enabledMods);
+        var (staleEntries, redundantAlwaysEnabled) =
+            FindStaleEntries(settings, instance, enabledMods, disabledIn);
         var disabledMods = FindDisabledMods(settings, instance, enabledMods, listedMods, disabledIn);
         var modsWithoutDownload = FindModsWithoutDownload(settings, instance, enabledMods, warnings);
 
@@ -61,16 +62,19 @@ public static class Analyzer
         {
             ProfilesUsed = profilesUsed,
             StaleEntries = staleEntries,
+            RedundantAlwaysEnabled = redundantAlwaysEnabled,
             DisabledMods = disabledMods,
             ModsWithoutDownload = modsWithoutDownload,
             Warnings = warnings,
         };
     }
 
-    private static List<StaleEntry> FindStaleEntries(
-        CompilerSettings settings, Mo2Instance instance, HashSet<string> enabledMods)
+    private static (List<StaleEntry> Stale, List<StaleEntry> Redundant) FindStaleEntries(
+        CompilerSettings settings, Mo2Instance instance, HashSet<string> enabledMods,
+        Dictionary<string, List<string>> disabledIn)
     {
-        var findings = new List<StaleEntry>();
+        var stale = new List<StaleEntry>();
+        var redundant = new List<StaleEntry>();
         foreach (var list in Enum.GetValues<TagList>())
         {
             var entries = settings.GetTagList(list);
@@ -82,7 +86,7 @@ public static class Analyzer
 
                 if (!seen.Add(normalized))
                 {
-                    findings.Add(new StaleEntry(list, i, entry, StaleEntryKind.Duplicate,
+                    stale.Add(new StaleEntry(list, i, entry, StaleEntryKind.Duplicate,
                         "Duplicate of an earlier entry in the same list."));
                     continue;
                 }
@@ -90,25 +94,31 @@ public static class Analyzer
                 var fullPath = Path.Combine(instance.SourcePath, normalized);
                 if (!File.Exists(fullPath) && !Directory.Exists(fullPath))
                 {
-                    findings.Add(new StaleEntry(list, i, entry, StaleEntryKind.Missing,
+                    stale.Add(new StaleEntry(list, i, entry, StaleEntryKind.Missing,
                         "No such file or folder under the source directory."));
                     continue;
                 }
 
                 if (list == TagList.AlwaysEnabled)
                 {
+                    // The tag is inert only when the mod is enabled in every selected
+                    // profile that lists it. If even one selected profile disables the
+                    // mod, the tag preserves that profile's '-' line in the shipped
+                    // modlist.txt (IncludeThisProfile.ReadAndCleanModlist), so it is
+                    // doing real work and must not be reported.
                     var parts = RelPaths.Split(normalized);
                     if (parts.Length >= 2
                         && RelPaths.Comparer.Equals(parts[0], "mods")
-                        && enabledMods.Contains(parts[1]))
+                        && enabledMods.Contains(parts[1])
+                        && !disabledIn.ContainsKey(parts[1]))
                     {
-                        findings.Add(new StaleEntry(list, i, entry, StaleEntryKind.RedundantAlwaysEnabled,
-                            $"Mod '{parts[1]}' is already enabled in a selected profile, so Always Enabled has no effect."));
+                        redundant.Add(new StaleEntry(list, i, entry, StaleEntryKind.RedundantAlwaysEnabled,
+                            $"Mod '{parts[1]}' is enabled in every selected profile that lists it, so the tag currently has no effect."));
                     }
                 }
             }
         }
-        return findings;
+        return (stale, redundant);
     }
 
     private static List<DisabledModFinding> FindDisabledMods(

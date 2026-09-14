@@ -42,7 +42,16 @@ public sealed record MissingDownloadFinding(
 public sealed class AnalysisResult
 {
     public required IReadOnlyList<string> ProfilesUsed { get; init; }
+
+    /// <summary>Dead references only: missing paths and duplicates.</summary>
     public required IReadOnlyList<StaleEntry> StaleEntries { get; init; }
+
+    /// <summary>AlwaysEnabled entries whose mod is enabled in every selected profile
+    /// that lists it — the tag currently has no effect at all. Kept separate from
+    /// <see cref="StaleEntries"/> because removing one changes a live setting rather
+    /// than deleting a dead reference. A mod disabled in even one selected profile is
+    /// NOT reported: there the tag preserves that profile's disabled modlist.txt line.</summary>
+    public required IReadOnlyList<StaleEntry> RedundantAlwaysEnabled { get; init; }
     public required IReadOnlyList<DisabledModFinding> DisabledMods { get; init; }
     public required IReadOnlyList<MissingDownloadFinding> ModsWithoutDownload { get; init; }
     public required IReadOnlyList<string> Warnings { get; init; }
