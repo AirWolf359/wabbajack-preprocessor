@@ -17,6 +17,8 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            MainViewModel.ApplyTheme(AppPreferences.Instance.Theme);
+
             var viewModel = new MainViewModel();
 
             // Allow launching with a settings file: WabbajackPreprocessor <file.compiler_settings>

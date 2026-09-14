@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using Avalonia;
+using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WabbajackPreprocessor.Core.Analysis;
@@ -11,6 +13,33 @@ public partial class MainViewModel : ViewModelBase
 {
     private CompilerSettings? _settings;
     private string? _loadedSettingsPath;
+
+    public static readonly string[] ThemeOptions = ["System", "Dark", "Light"];
+
+    [ObservableProperty]
+    private int _selectedThemeIndex = Math.Max(0,
+        Array.IndexOf(ThemeOptions, AppPreferences.Instance.Theme));
+
+    partial void OnSelectedThemeIndexChanged(int value)
+    {
+        ApplyTheme(ThemeOptions[Math.Clamp(value, 0, ThemeOptions.Length - 1)]);
+        AppPreferences.Instance.Theme = ThemeOptions[Math.Clamp(value, 0, ThemeOptions.Length - 1)];
+        AppPreferences.Instance.Save();
+    }
+
+    /// <summary>Sets the application theme variant; "System" follows Windows.</summary>
+    public static void ApplyTheme(string theme)
+    {
+        if (Application.Current is { } app)
+        {
+            app.RequestedThemeVariant = theme switch
+            {
+                "Dark" => ThemeVariant.Dark,
+                "Light" => ThemeVariant.Light,
+                _ => ThemeVariant.Default,
+            };
+        }
+    }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(AnalyzeCommand))]
