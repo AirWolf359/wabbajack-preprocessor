@@ -48,6 +48,15 @@ parser or serialization behavior.
   C# 14 partial-property syntax (`public partial string X { get; set; }`) don't
   compile here — use classic `[ObservableProperty] private string _x;`.
 
+## Scope boundary (hard rule)
+
+This tool is a **supplement to Wabbajack, never a replacement**. It must not
+compile modlists, invoke or wrap the Wabbajack CLI/binaries, or reimplement any
+part of compilation — the author has explicitly ruled this out on ethical
+grounds (Wabbajack's team maintains the hard parts; this project supports their
+work rather than absorbing its interface). Do not propose, scaffold, or accept
+changes in that direction; the README states the same policy publicly.
+
 ## Conventions
 
 - `samples/` holds the user's real modlist data for local validation and is
