@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using WabbajackPreprocessor.App.Localization;
 using WabbajackPreprocessor.Core.Analysis;
 using WabbajackPreprocessor.Core.Mo2;
 using WabbajackPreprocessor.Core.Settings;
@@ -14,7 +15,12 @@ public partial class MainViewModel : ViewModelBase
     private CompilerSettings? _settings;
     private string? _loadedSettingsPath;
 
+    /// <summary>Canonical stored values; index-aligned with <see cref="ThemeDisplayOptions"/>.</summary>
     public static readonly string[] ThemeOptions = ["System", "Dark", "Light"];
+
+    /// <summary>Localized labels shown in the theme dropdown.</summary>
+    public static readonly string[] ThemeDisplayOptions =
+        [L.Get("ThemeSystem"), L.Get("ThemeDark"), L.Get("ThemeLight")];
 
     [ObservableProperty]
     private int _selectedThemeIndex = Math.Max(0,
@@ -52,22 +58,22 @@ public partial class MainViewModel : ViewModelBase
     private string _profilesSummary = "";
 
     [ObservableProperty]
-    private string _statusMessage = "Select a .compiler_settings file and click Analyze.";
+    private string _statusMessage = L.Get("StatusInitial");
 
     [ObservableProperty]
-    private string _staleHeader = "Stale entries";
+    private string _staleHeader = L.Get("TabStalePlain");
 
     [ObservableProperty]
-    private string _redundantHeader = "Redundant Always Enabled";
+    private string _redundantHeader = L.Get("TabRedundantPlain");
 
     [ObservableProperty]
-    private string _disabledHeader = "Disabled mods";
+    private string _disabledHeader = L.Get("TabDisabledPlain");
 
     [ObservableProperty]
-    private string _downloadsHeader = "No download";
+    private string _downloadsHeader = L.Get("TabNoDownloadPlain");
 
     [ObservableProperty]
-    private string _warningsHeader = "Warnings";
+    private string _warningsHeader = L.Get("TabWarningsPlain");
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
@@ -89,7 +95,7 @@ public partial class MainViewModel : ViewModelBase
             var path = SettingsPath.Trim().Trim('"');
             if (!File.Exists(path))
             {
-                StatusMessage = $"File not found: {path}";
+                StatusMessage = L.F("StatusFileNotFoundFmt", path);
                 return;
             }
 
@@ -128,43 +134,50 @@ public partial class MainViewModel : ViewModelBase
 
             Warnings.Clear();
             foreach (var warning in result.Warnings)
-                Warnings.Add(warning);
+                Warnings.Add(FormatWarning(warning));
 
-            StaleHeader = $"Stale entries ({staleCount})";
-            RedundantHeader = $"Redundant Always Enabled ({RedundantItems.Count})";
-            DisabledHeader = $"Disabled mods ({DisabledItems.Count})";
-            DownloadsHeader = $"No download ({DownloadItems.Count})";
-            WarningsHeader = $"Warnings ({Warnings.Count})";
+            StaleHeader = L.F("TabCountFmt", L.Get("TabStalePlain"), staleCount);
+            RedundantHeader = L.F("TabCountFmt", L.Get("TabRedundantPlain"), RedundantItems.Count);
+            DisabledHeader = L.F("TabCountFmt", L.Get("TabDisabledPlain"), DisabledItems.Count);
+            DownloadsHeader = L.F("TabCountFmt", L.Get("TabNoDownloadPlain"), DownloadItems.Count);
+            WarningsHeader = L.F("TabCountFmt", L.Get("TabWarningsPlain"), Warnings.Count);
 
-            InstanceSummary =
-                $"{_settings.ModListName} — source: {source} — " +
-                $"{instance.Mods.Count} mods, {instance.Downloads.Count} downloads";
+            InstanceSummary = L.F("InstanceSummaryFmt",
+                _settings.ModListName, source, instance.Mods.Count, instance.Downloads.Count);
 
             // Show what the settings file specifies, flagging profiles missing on disk.
             string Describe(string? name) =>
-                string.IsNullOrWhiteSpace(name) ? "(none set)"
+                string.IsNullOrWhiteSpace(name) ? L.Get("ProfileNoneSet")
                 : instance.Profiles.ContainsKey(name) ? name
-                : $"{name} (not found on disk!)";
+                : L.F("ProfileNotFoundFmt", name);
             var additional = _settings.AdditionalProfiles.Count > 0
                 ? string.Join(", ", _settings.AdditionalProfiles.Select(Describe))
-                : "none";
-            ProfilesSummary =
-                $"Default profile: {Describe(_settings.Profile)}   •   Additional profiles: {additional}";
+                : L.Get("AdditionalNone");
+            ProfilesSummary = L.F("ProfilesSummaryFmt", Describe(_settings.Profile), additional);
 
             HasAnalysis = true;
             var total = staleCount + RedundantItems.Count + DisabledItems.Count + DownloadItems.Count;
             StatusMessage = total == 0
-                ? "Analysis complete: nothing to clean up."
-                : $"Analysis complete: {staleCount} stale entries, " +
-                  $"{RedundantItems.Count} redundant Always Enabled tags, " +
-                  $"{DisabledItems.Count} disabled mods, {DownloadItems.Count} mods without a download.";
+                ? L.Get("StatusNothingToClean")
+                : L.F("StatusAnalysisSummaryFmt", staleCount, RedundantItems.Count,
+                    DisabledItems.Count, DownloadItems.Count);
         }
         catch (Exception ex)
         {
             HasAnalysis = false;
-            StatusMessage = $"Analysis failed: {ex.Message}";
+            StatusMessage = L.F("StatusAnalysisFailedFmt", ex.Message);
         }
     }
+
+    private static string FormatWarning(AnalysisWarning warning) => warning.Kind switch
+    {
+        WarningKind.ProfileNotFound => L.F("WarnProfileNotFoundFmt", warning.Subject),
+        WarningKind.NoProfilesFound => L.Get("WarnNoProfiles"),
+        WarningKind.DownloadsFolderMissing => L.F("WarnDownloadsFolderMissingFmt", warning.Subject),
+        WarningKind.DownloadsWithoutMeta => L.F("WarnDownloadsWithoutMetaFmt", warning.Count),
+        WarningKind.UnknownArchiveMetas => L.F("WarnUnknownArchiveMetasFmt", warning.Count),
+        _ => warning.Kind.ToString(),
+    };
 
     private bool CanApply() => HasAnalysis;
 
@@ -193,7 +206,7 @@ public partial class MainViewModel : ViewModelBase
 
         if (plan.IsEmpty)
         {
-            StatusMessage = "No changes selected.";
+            StatusMessage = L.Get("StatusNoChanges");
             return;
         }
 
@@ -206,12 +219,12 @@ public partial class MainViewModel : ViewModelBase
             // (Analyze() sets its own status message).
             Analyze();
             StatusMessage = backupPath is null
-                ? $"Saved {changes.Count} change(s) to {Path.GetFileName(_loadedSettingsPath)}."
-                : $"Saved {changes.Count} change(s). Backup: {Path.GetFileName(backupPath)}";
+                ? L.F("StatusSavedFmt", changes.Count, Path.GetFileName(_loadedSettingsPath))
+                : L.F("StatusSavedBackupFmt", changes.Count, Path.GetFileName(backupPath));
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Save failed: {ex.Message}";
+            StatusMessage = L.F("StatusSaveFailedFmt", ex.Message);
         }
     }
 }

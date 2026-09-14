@@ -117,7 +117,7 @@ public sealed class AnalyzerTests : IDisposable
         // Disabled: Beta (listed with '-') and Unlisted (absent from modlist.txt);
         // Optional AE is excluded because it is already AlwaysEnabled; the separator is skipped.
         Assert.Equal(2, result.DisabledMods.Count);
-        Assert.Contains(result.DisabledMods, m => m.ModName == "Beta" && m.Note.Contains("Main"));
+        Assert.Contains(result.DisabledMods, m => m.ModName == "Beta" && m.DisabledInProfiles.Contains("Main"));
         Assert.Contains(result.DisabledMods, m => m.ModName == "Unlisted");
 
         // Without download: NoDownload (archive gone), Optional AE (AlwaysEnabled, no meta),
@@ -129,7 +129,8 @@ public sealed class AnalyzerTests : IDisposable
         // ui.dds has a counterpart in Alpha (same relative path), bos_swap.ini is a
         // config Wabbajack auto-inlines, NoDlPatch.esp is genuinely unique.
         var noDownload = Assert.Single(result.ModsWithoutDownload, m => m.ModName == "NoDownload");
-        Assert.Contains("Vanished-999.7z", noDownload.Reason);
+        Assert.Equal(MissingDownloadReason.ArchiveNotFound, noDownload.Reason);
+        Assert.Equal("Vanished-999.7z", noDownload.InstallationFile);
         Assert.True(noDownload is { TaggedInclude: false, TaggedNoMatchInclude: false });
         Assert.Equal(3, noDownload.TotalFileCount);
         Assert.Equal(1, noDownload.OverlapFileCount);
@@ -145,11 +146,11 @@ public sealed class AnalyzerTests : IDisposable
 
         // No files at all (meta.ini is excluded from the count).
         var optionalAe = Assert.Single(result.ModsWithoutDownload, m => m.ModName == "Optional AE");
-        Assert.Contains("meta.ini", optionalAe.Reason);
+        Assert.Equal(MissingDownloadReason.NoMetaIni, optionalAe.Reason);
         Assert.Equal(0, optionalAe.TotalFileCount);
 
         // Orphan.7z has no .meta -> warning.
-        Assert.Contains(result.Warnings, w => w.Contains("no .meta"));
+        Assert.Contains(result.Warnings, w => w.Kind == WarningKind.DownloadsWithoutMeta && w.Count == 1);
     }
 
     [Fact]

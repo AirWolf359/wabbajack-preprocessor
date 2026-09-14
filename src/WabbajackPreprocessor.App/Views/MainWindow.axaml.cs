@@ -36,11 +36,11 @@ public partial class MainWindow : Window
 
         var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Select a compiler settings file",
+            Title = Localization.L.Get("FilePickerTitle"),
             AllowMultiple = false,
             FileTypeFilter =
             [
-                new FilePickerFileType("Wabbajack compiler settings")
+                new FilePickerFileType(Localization.L.Get("FilePickerFilterName"))
                 {
                     Patterns = ["*.compiler_settings"],
                 },

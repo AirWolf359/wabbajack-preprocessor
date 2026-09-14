@@ -17,6 +17,22 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            // A configured language overrides the OS UI culture. Must run before any
+            // localized string is touched; a change takes effect on the next launch.
+            if (AppPreferences.Instance.Language is { Length: > 0 } language)
+            {
+                try
+                {
+                    var culture = new System.Globalization.CultureInfo(language);
+                    System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = culture;
+                    System.Globalization.CultureInfo.CurrentUICulture = culture;
+                }
+                catch (System.Globalization.CultureNotFoundException)
+                {
+                    // ignore a bad preference; fall back to the OS language
+                }
+            }
+
             MainViewModel.ApplyTheme(AppPreferences.Instance.Theme);
 
             var viewModel = new MainViewModel();
