@@ -22,6 +22,28 @@ public partial class MainViewModel : ViewModelBase
     public static readonly string[] ThemeDisplayOptions =
         [L.Get("ThemeSystem"), L.Get("ThemeDark"), L.Get("ThemeLight")];
 
+    /// <summary>Stored culture names; null follows the OS. Index-aligned with
+    /// <see cref="LanguageDisplayOptions"/>.</summary>
+    public static readonly string?[] LanguageOptions =
+        [null, "en", "de", "fr", "pl", "ru", "pt-BR", "es", "zh-Hans"];
+
+    /// <summary>Languages shown by their native names (standard practice, so users can
+    /// find their own language regardless of the current UI language).</summary>
+    public static readonly string[] LanguageDisplayOptions =
+        [L.Get("LanguageSystem"), "English", "Deutsch", "Français", "Polski",
+         "Русский", "Português (Brasil)", "Español", "简体中文"];
+
+    [ObservableProperty]
+    private int _selectedLanguageIndex = Math.Max(0,
+        Array.IndexOf(LanguageOptions, AppPreferences.Instance.Language));
+
+    partial void OnSelectedLanguageIndexChanged(int value)
+    {
+        AppPreferences.Instance.Language =
+            LanguageOptions[Math.Clamp(value, 0, LanguageOptions.Length - 1)];
+        AppPreferences.Instance.Save(); // applied on next launch
+    }
+
     [ObservableProperty]
     private int _selectedThemeIndex = Math.Max(0,
         Array.IndexOf(ThemeOptions, AppPreferences.Instance.Theme));

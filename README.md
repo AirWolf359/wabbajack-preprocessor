@@ -71,6 +71,17 @@ byte-for-byte, so untouched parts of the file never change.
 > match another archive. The tool tells you what deserves a look; the decision
 > stays yours.
 
+## Languages
+
+The app follows your Windows display language and can be switched manually in
+**Tools → Settings**. Available: English, Deutsch, Français, Polski, Русский,
+Português (Brasil), Español, and 简体中文. The non-English translations are
+machine-drafted; if you're a native speaker and spot something off, corrections
+via PR or issue are very welcome (`src/WabbajackPreprocessor.App/Localization/`).
+Wabbajack's own tag names (Include, No match include, Ignore, Always enabled)
+deliberately stay in English in every language, since they mirror Wabbajack's
+English-only UI.
+
 ## Accessibility
 
 The app supports Windows assistive technology via UI Automation: it works with

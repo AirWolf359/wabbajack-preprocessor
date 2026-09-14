@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="MenuFile" xml:space="preserve"><value>_Plik</value></data>
+  <data name="MenuOpenSettingsFile" xml:space="preserve"><value>_Otwórz plik ustawień…</value></data>
+  <data name="MenuExit" xml:space="preserve"><value>Za_kończ</value></data>
+  <data name="MenuTools" xml:space="preserve"><value>_Narzędzia</value></data>
+  <data name="MenuSettingsItem" xml:space="preserve"><value>_Ustawienia…</value></data>
+  <data name="MenuHelp" xml:space="preserve"><value>Pomo_c</value></data>
+  <data name="MenuGitHub" xml:space="preserve"><value>Repozytorium _GitHub</value></data>
+  <data name="MenuAbout" xml:space="preserve"><value>_O programie…</value></data>
+
+  <data name="SettingsFileLabel" xml:space="preserve"><value>Plik ustawień kompilatora (.compiler_settings)</value></data>
+  <data name="SettingsFilePlaceholder" xml:space="preserve"><value>Ścieżka do pliku &lt;modlista&gt;.compiler_settings</value></data>
+  <data name="SettingsFileAccessibleName" xml:space="preserve"><value>Ścieżka pliku ustawień kompilatora</value></data>
+  <data name="BrowseButton" xml:space="preserve"><value>Przeglądaj…</value></data>
+  <data name="AnalyzeButton" xml:space="preserve"><value>Analizuj</value></data>
+  <data name="ApplyButton" xml:space="preserve"><value>Zastosuj zmiany</value></data>
+  <data name="StatusAccessibleName" xml:space="preserve"><value>Stan</value></data>
+  <data name="StatusInitial" xml:space="preserve"><value>Wybierz plik .compiler_settings i kliknij „Analizuj”.</value></data>
+  <data name="FilePickerTitle" xml:space="preserve"><value>Wybierz plik ustawień kompilatora</value></data>
+  <data name="FilePickerFilterName" xml:space="preserve"><value>Ustawienia kompilatora Wabbajack</value></data>
+
+  <data name="TabStalePlain" xml:space="preserve"><value>Nieaktualne wpisy</value></data>
+  <data name="TabRedundantPlain" xml:space="preserve"><value>Zbędne Always Enabled</value></data>
+  <data name="TabDisabledPlain" xml:space="preserve"><value>Wyłączone mody</value></data>
+  <data name="TabNoDownloadPlain" xml:space="preserve"><value>Brak pobrania</value></data>
+  <data name="TabWarningsPlain" xml:space="preserve"><value>Ostrzeżenia</value></data>
+
+  <data name="DescStale" xml:space="preserve"><value>Martwe odwołania w listach tagów pliku ustawień: wpisy wskazujące pliki lub foldery, które już nie istnieją, oraz duplikaty. Ich usunięcie nigdy nie zmienia tego, co zostanie skompilowane. Zaznaczone wpisy zostaną usunięte po zastosowaniu.</value></data>
+  <data name="DescRedundant" xml:space="preserve"><value>Mody wciąż obecne na liście, których tag Always Enabled obecnie nic nie robi, ponieważ mod jest włączony w każdym wybranym profilu, który go wymienia. (Mod wyłączony choćby w jednym wybranym profilu nie jest pokazywany — tam tag zachowuje wyłączony wiersz tego profilu.) Zaznaczenie moda usuwa jego tag po zastosowaniu; zachowaj tag, jeśli możesz później wyłączyć ten mod.</value></data>
+  <data name="DescDisabled" xml:space="preserve"><value>Mody wyłączone w każdym wybranym profilu. Wabbajack je pomija, chyba że oznaczysz je jako Always Enabled (ich pliki trafią do listy, nadal wyłączone, do włączenia przez użytkowników).</value></data>
+  <data name="DescNoDownload" xml:space="preserve"><value>Mody, które zostaną skompilowane, ale nie da się ich powiązać z żadnym archiwum pobrania. Ich pliki muszą zostać osadzone w modliście: Include osadza je bezwarunkowo; No match include osadza tylko to, czego nic innego nie dopasuje (typowy wybór dla treści generowanych). Każdy wiersz pokazuje bieżący tag moda; zmień listę rozwijaną, aby zmienić lub usunąć tag.</value></data>
+
+  <data name="ListNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="ListInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="ListIgnore" xml:space="preserve"><value>Ignore</value></data>
+  <data name="ListAlwaysEnabled" xml:space="preserve"><value>Always enabled</value></data>
+  <data name="SubMissing" xml:space="preserve"><value>Już nie istnieje</value></data>
+  <data name="SubDuplicate" xml:space="preserve"><value>Zduplikowane wpisy</value></data>
+  <data name="RedundantReasonFmt" xml:space="preserve"><value>Mod „{0}” jest włączony w każdym wybranym profilu, który go wymienia; tag obecnie nic nie robi.</value></data>
+  <data name="RemoveEntryAccessibleFmt" xml:space="preserve"><value>Usuń {0} z pliku ustawień</value></data>
+  <data name="RemoveAETagAccessibleFmt" xml:space="preserve"><value>Usuń tag Always Enabled z {0}</value></data>
+  <data name="RemoveAETagTooltip" xml:space="preserve"><value>Usuń tag Always Enabled</value></data>
+
+  <data name="DisabledInFmt" xml:space="preserve"><value>Wyłączony w: {0}</value></data>
+  <data name="NotListedNote" xml:space="preserve"><value>Niewymieniony w modlist.txt żadnego wybranego profilu.</value></data>
+  <data name="MarkAEAccessibleFmt" xml:space="preserve"><value>Oznacz {0} jako Always Enabled</value></data>
+  <data name="MarkAETooltip" xml:space="preserve"><value>Dodaj do AlwaysEnabled</value></data>
+
+  <data name="ReasonNoMetaIni" xml:space="preserve"><value>Brak meta.ini — prawdopodobnie folder moda utworzony ręcznie lub wygenerowany.</value></data>
+  <data name="ReasonArchiveNotFoundFmt" xml:space="preserve"><value>Zainstalowany z „{0}”, którego nie ma w folderze pobrań.</value></data>
+  <data name="ReasonNoInstallationFile" xml:space="preserve"><value>meta.ini nie zawiera archiwum instalacyjnego.</value></data>
+  <data name="CurrentlyFmt" xml:space="preserve"><value>Obecnie: {0}</value></data>
+  <data name="TagStatusInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="TagStatusNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="TagStatusBoth" xml:space="preserve"><value>Include + No match include</value></data>
+  <data name="TagStatusUntagged" xml:space="preserve"><value>bez tagu</value></data>
+  <data name="ActionUntagged" xml:space="preserve"><value>Bez tagu</value></data>
+  <data name="ActionInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="ActionNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="TagActionAccessibleFmt" xml:space="preserve"><value>Akcja tagu dla {0}</value></data>
+  <data name="OverlapNoFiles" xml:space="preserve"><value>Folder moda nie zawiera żadnych plików.</value></data>
+  <data name="OverlapDiffPartFmt" xml:space="preserve"><value>{0} istnieje też w pobranych modach (zapisywane jako różnice binarne)</value></data>
+  <data name="OverlapConfigPartFmt" xml:space="preserve"><value>{0} to pliki konfiguracyjne/tekstowe, które Wabbajack zawsze osadza</value></data>
+  <data name="OverlapAllFmt" xml:space="preserve"><value>⚑ Wszystkie {0} plik(i/ów) są obsługiwane bez tagu: {1}. Tag nie jest ściśle wymagany (No match include to bezpieczna asekuracja; unikaj Include).</value></data>
+  <data name="OverlapPartialFmt" xml:space="preserve"><value>⚑ {0} z {1} plików jest obsługiwanych bez tagu ({2}) — {3} unikatowy(e) plik(i) nadal wymagają osadzenia (np. {4}); zalecane No match include.</value></data>
+
+  <data name="WarnProfileNotFoundFmt" xml:space="preserve"><value>Profil „{0}” z pliku ustawień nie ma pliku profiles\{0}\modlist.txt w instancji.</value></data>
+  <data name="WarnNoProfiles" xml:space="preserve"><value>Nie znaleziono żadnego z wybranych profili; kontrole wyłączonych modów i pobrań są ograniczone.</value></data>
+  <data name="WarnDownloadsFolderMissingFmt" xml:space="preserve"><value>Folder pobrań „{0}” nie istnieje.</value></data>
+  <data name="WarnDownloadsWithoutMetaFmt" xml:space="preserve"><value>{0} plik(i/ów) w folderze pobrań nie ma pliku towarzyszącego .meta; Wabbajack spróbuje ustalić ich źródło albo je zignoruje.</value></data>
+  <data name="WarnUnknownArchiveMetasFmt" xml:space="preserve"><value>{0} plik(i/ów) .meta pobrań ma oznaczenie unknownArchive=true; kompilacja nie powiedzie się, jeśli dopasowany plik ich potrzebuje.</value></data>
+
+  <data name="InstanceSummaryFmt" xml:space="preserve"><value>{0} — źródło: {1} — {2} modów, {3} pobrań</value></data>
+  <data name="ProfilesSummaryFmt" xml:space="preserve"><value>Profil domyślny: {0}   •   Profile dodatkowe: {1}</value></data>
+  <data name="ProfileNoneSet" xml:space="preserve"><value>(nie ustawiono)</value></data>
+  <data name="ProfileNotFoundFmt" xml:space="preserve"><value>{0} (nie znaleziono na dysku!)</value></data>
+  <data name="AdditionalNone" xml:space="preserve"><value>brak</value></data>
+
+  <data name="StatusFileNotFoundFmt" xml:space="preserve"><value>Nie znaleziono pliku: {0}</value></data>
+  <data name="StatusAnalysisFailedFmt" xml:space="preserve"><value>Analiza nie powiodła się: {0}</value></data>
+  <data name="StatusNothingToClean" xml:space="preserve"><value>Analiza zakończona: nie ma nic do posprzątania.</value></data>
+  <data name="StatusAnalysisSummaryFmt" xml:space="preserve"><value>Analiza zakończona: {0} nieaktualnych wpisów, {1} zbędnych tagów Always Enabled, {2} wyłączonych modów, {3} modów bez pobrania.</value></data>
+  <data name="StatusNoChanges" xml:space="preserve"><value>Nie wybrano żadnych zmian.</value></data>
+  <data name="StatusSavedFmt" xml:space="preserve"><value>Zapisano {0} zmian(y) w {1}.</value></data>
+  <data name="StatusSavedBackupFmt" xml:space="preserve"><value>Zapisano {0} zmian(y). Kopia zapasowa: {1}</value></data>
+  <data name="StatusSaveFailedFmt" xml:space="preserve"><value>Zapis nie powiódł się: {0}</value></data>
+
+  <data name="SettingsTitle" xml:space="preserve"><value>Ustawienia</value></data>
+  <data name="LanguageLabel" xml:space="preserve"><value>Język</value></data>
+  <data name="LanguageSystem" xml:space="preserve"><value>Systemowy (język Windows)</value></data>
+  <data name="LanguageAccessibleName" xml:space="preserve"><value>Język</value></data>
+  <data name="SettingsLanguageNote" xml:space="preserve"><value>Zmiana języka zacznie obowiązywać po ponownym uruchomieniu aplikacji. Tłumaczenia są przygotowane maszynowo — poprawki mile widziane na GitHubie.</value></data>
+  <data name="ThemeLabel" xml:space="preserve"><value>Motyw</value></data>
+  <data name="ThemeSystem" xml:space="preserve"><value>Systemowy</value></data>
+  <data name="ThemeDark" xml:space="preserve"><value>Ciemny</value></data>
+  <data name="ThemeLight" xml:space="preserve"><value>Jasny</value></data>
+  <data name="SettingsThemeNote" xml:space="preserve"><value>„Systemowy” podąża za trybem aplikacji w Windows. Zmiany działają natychmiast i są zapamiętywane.</value></data>
+  <data name="ColorThemeAccessibleName" xml:space="preserve"><value>Motyw kolorów</value></data>
+  <data name="CloseButton" xml:space="preserve"><value>Zamknij</value></data>
+
+  <data name="AboutTitle" xml:space="preserve"><value>O programie</value></data>
+  <data name="AboutVersionFmt" xml:space="preserve"><value>Wersja {0}</value></data>
+  <data name="AboutDescription" xml:space="preserve"><value>Narzędzie porządkujące dla autorów modlist Wabbajack. Uzupełnienie Wabbajacka, nie zastępstwo — listę kompiluj w samym Wabbajacku. Licencja MIT.</value></data>
+  <data name="AboutRepoButton" xml:space="preserve"><value>Repozytorium GitHub</value></data>
+</root>
