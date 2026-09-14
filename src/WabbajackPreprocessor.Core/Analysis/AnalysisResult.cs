@@ -22,9 +22,22 @@ public sealed record DisabledModFinding(string ModName, string Note);
 
 /// <summary>A mod that will be compiled but has no traceable download archive.
 /// The Tagged flags report whether the settings file already carries an exact
-/// <c>mods\&lt;name&gt;</c> entry in the corresponding list.</summary>
+/// <c>mods\&lt;name&gt;</c> entry in the corresponding list. The file-overlap fields
+/// support spotting patch mods: a file that also exists in a downloaded mod's folder
+/// is likely stored by Wabbajack as a binary diff against that mod's archive
+/// (IncludePatches runs before NoMatchInclude), so it needs no tag; only files with
+/// no counterpart anywhere must be inlined.</summary>
 public sealed record MissingDownloadFinding(
-    string ModName, string Reason, bool TaggedInclude, bool TaggedNoMatchInclude);
+    string ModName, string Reason, bool TaggedInclude, bool TaggedNoMatchInclude,
+    int TotalFileCount = 0, int OverlapFileCount = 0, int AutoInlinedFileCount = 0)
+{
+    /// <summary>Up to five example files that are neither auto-inlined nor have a
+    /// counterpart in any downloaded mod — the ones a tag actually exists for.</summary>
+    public IReadOnlyList<string> UniqueFileSample { get; init; } = [];
+
+    /// <summary>Files Wabbajack handles without any tag: diff-patched or auto-inlined.</summary>
+    public int HandledFileCount => OverlapFileCount + AutoInlinedFileCount;
+}
 
 public sealed class AnalysisResult
 {

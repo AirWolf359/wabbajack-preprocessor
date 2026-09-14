@@ -23,6 +23,16 @@ public sealed class AnalyzerTests : IDisposable
         CreateMod("Optional AE", metaIni: null);
         CreateMod("Visuals_separator", "");
 
+        // Files for the patch-overlap scan: Alpha is downloaded, so its files stand in
+        // for its archive's contents.
+        AddFile("Alpha", "SkyUI.esp");
+        AddFile("Alpha", "textures\\ui.dds");
+        AddFile("NoDownload", "textures\\ui.dds");   // overlap by Data-relative path
+        AddFile("NoDownload", "NoDlPatch.esp");      // unique -> needs inlining
+        AddFile("NoDownload", "swaps\\bos_swap.ini"); // config: Wabbajack auto-inlines
+        AddFile("HandMade", "optional\\SkyUI.esp");  // overlap by bare file name only
+        // Optional AE deliberately has no files.
+
         // profile
         var profileDir = Path.Combine(_source, "profiles", "Main");
         Directory.CreateDirectory(profileDir);
@@ -54,6 +64,13 @@ public sealed class AnalyzerTests : IDisposable
         Directory.CreateDirectory(dir);
         if (metaIni is not null)
             File.WriteAllLines(Path.Combine(dir, "meta.ini"), ["[General]", .. metaIni]);
+    }
+
+    private void AddFile(string modName, string relPath)
+    {
+        var path = Path.Combine(_source, "mods", modName, relPath);
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, "x");
     }
 
     private CompilerSettings MakeSettings() => new()
@@ -93,13 +110,28 @@ public sealed class AnalyzerTests : IDisposable
         // Alpha links via installationFile, ByNexusIds via installedFiles IDs,
         // Beta is disabled (not compiled).
         Assert.Equal(3, result.ModsWithoutDownload.Count);
-        Assert.Contains(result.ModsWithoutDownload, m =>
-            m.ModName == "NoDownload" && m.Reason.Contains("Vanished-999.7z")
-            && m is { TaggedInclude: false, TaggedNoMatchInclude: false });
-        Assert.Contains(result.ModsWithoutDownload, m =>
-            m.ModName == "Optional AE" && m.Reason.Contains("meta.ini"));
-        Assert.Contains(result.ModsWithoutDownload, m =>
-            m.ModName == "HandMade" && m is { TaggedInclude: false, TaggedNoMatchInclude: true });
+
+        // ui.dds has a counterpart in Alpha (same relative path), bos_swap.ini is a
+        // config Wabbajack auto-inlines, NoDlPatch.esp is genuinely unique.
+        var noDownload = Assert.Single(result.ModsWithoutDownload, m => m.ModName == "NoDownload");
+        Assert.Contains("Vanished-999.7z", noDownload.Reason);
+        Assert.True(noDownload is { TaggedInclude: false, TaggedNoMatchInclude: false });
+        Assert.Equal(3, noDownload.TotalFileCount);
+        Assert.Equal(1, noDownload.OverlapFileCount);
+        Assert.Equal(1, noDownload.AutoInlinedFileCount);
+        Assert.Equal(2, noDownload.HandledFileCount);
+        Assert.Equal(["NoDlPatch.esp"], noDownload.UniqueFileSample);
+
+        // Full overlap by bare file name (different subfolder than Alpha's copy).
+        var handMade = Assert.Single(result.ModsWithoutDownload, m => m.ModName == "HandMade");
+        Assert.True(handMade is { TaggedInclude: false, TaggedNoMatchInclude: true });
+        Assert.Equal(1, handMade.TotalFileCount);
+        Assert.Equal(1, handMade.OverlapFileCount);
+
+        // No files at all (meta.ini is excluded from the count).
+        var optionalAe = Assert.Single(result.ModsWithoutDownload, m => m.ModName == "Optional AE");
+        Assert.Contains("meta.ini", optionalAe.Reason);
+        Assert.Equal(0, optionalAe.TotalFileCount);
 
         // Orphan.7z has no .meta -> warning.
         Assert.Contains(result.Warnings, w => w.Contains("no .meta"));

@@ -153,11 +153,42 @@ public static class Analyzer
                 .Where(id => id.Length > 0 && id != "0" && id != "-1"),
             StringComparer.Ordinal);
 
+        // Link cascade (see docs/wabbajack-formats.md §4).
+        bool HasTraceableDownload(Mo2.ModFolder mod)
+        {
+            var installationFile = mod.InstallationFile?.Trim();
+            if (!string.IsNullOrEmpty(installationFile))
+            {
+                var found = Path.IsPathRooted(installationFile)
+                    ? File.Exists(installationFile)
+                    : downloadsByName.Contains(Path.GetFileName(installationFile))
+                      || File.Exists(Path.Combine(instance.DownloadsPath, installationFile));
+                if (found)
+                    return true;
+            }
+
+            if (mod.InstalledFiles.Any(f => downloadsByIds.Contains((f.ModId.Trim(), f.FileId.Trim()))))
+                return true;
+
+            var nexusId = mod.NexusModId?.Trim();
+            return !string.IsNullOrEmpty(nexusId) && nexusId != "0" && nexusId != "-1"
+                   && downloadModIds.Contains(nexusId);
+        }
+
         var findings = new List<MissingDownloadFinding>();
+        var downloadedMods = new List<Mo2.ModFolder>();
         foreach (var mod in instance.Mods)
         {
             if (mod.IsSeparator)
                 continue;
+
+            if (HasTraceableDownload(mod))
+            {
+                // Its folder stands in for its archive's contents in the overlap scan
+                // below — enabled or not, since Wabbajack indexes every download.
+                downloadedMods.Add(mod);
+                continue;
+            }
 
             // Only mods that will actually be compiled matter: enabled in a selected
             // profile, or force-kept via AlwaysEnabled.
@@ -179,26 +210,7 @@ public static class Analyzer
                 || (!taggedNoMatchInclude && RelPaths.IsCoveredBy(mod.RelativePath, settings.NoMatchInclude)))
                 continue;
 
-            // Link cascade (see docs/wabbajack-formats.md §4).
             var installationFile = mod.InstallationFile?.Trim();
-            if (!string.IsNullOrEmpty(installationFile))
-            {
-                var found = Path.IsPathRooted(installationFile)
-                    ? File.Exists(installationFile)
-                    : downloadsByName.Contains(Path.GetFileName(installationFile))
-                      || File.Exists(Path.Combine(instance.DownloadsPath, installationFile));
-                if (found)
-                    continue;
-            }
-
-            if (mod.InstalledFiles.Any(f => downloadsByIds.Contains((f.ModId.Trim(), f.FileId.Trim()))))
-                continue;
-
-            var nexusId = mod.NexusModId?.Trim();
-            if (!string.IsNullOrEmpty(nexusId) && nexusId != "0" && nexusId != "-1"
-                && downloadModIds.Contains(nexusId))
-                continue;
-
             var reason = !mod.HasMetaIni
                 ? "No meta.ini — likely a hand-created or generated mod folder."
                 : !string.IsNullOrEmpty(installationFile)
@@ -206,6 +218,83 @@ public static class Analyzer
                     : "meta.ini records no installation archive.";
             findings.Add(new MissingDownloadFinding(mod.Name, reason, taggedInclude, taggedNoMatchInclude));
         }
+
+        return AddFileOverlap(instance, findings, downloadedMods);
+    }
+
+    /// <summary>
+    /// Cheap patch-mod detection: a file in a no-download mod that also exists (by
+    /// Data-relative path, or failing that by bare file name — approximating
+    /// Wabbajack's name-based IncludePatches lookup) inside some downloaded mod's
+    /// folder will typically be stored as a binary diff against that archive, needing
+    /// no tag. Loose files only; counterparts inside BSAs are not seen, so overlap is
+    /// under-reported (the safe direction). The root meta.ini is ignored on both sides.
+    /// </summary>
+    private static List<MissingDownloadFinding> AddFileOverlap(
+        Mo2Instance instance, List<MissingDownloadFinding> findings,
+        List<Mo2.ModFolder> downloadedMods)
+    {
+        if (findings.Count == 0)
+            return findings;
+
+        var knownPaths = new HashSet<string>(RelPaths.Comparer);
+        var knownNames = new HashSet<string>(RelPaths.Comparer);
+        foreach (var mod in downloadedMods)
+        {
+            foreach (var (relPath, name) in EnumerateModFiles(instance, mod.Name))
+            {
+                knownPaths.Add(relPath);
+                knownNames.Add(name);
+            }
+        }
+
+        for (var i = 0; i < findings.Count; i++)
+        {
+            int total = 0, overlap = 0, autoInlined = 0;
+            var uniqueSample = new List<string>();
+            foreach (var (relPath, name) in EnumerateModFiles(instance, findings[i].ModName))
+            {
+                total++;
+                if (AutoInlinedExtensions.Contains(Path.GetExtension(name)))
+                    autoInlined++;
+                else if (knownPaths.Contains(relPath) || knownNames.Contains(name))
+                    overlap++;
+                else if (uniqueSample.Count < 5)
+                    uniqueSample.Add(relPath);
+            }
+            findings[i] = findings[i] with
+            {
+                TotalFileCount = total,
+                OverlapFileCount = overlap,
+                AutoInlinedFileCount = autoInlined,
+                UniqueFileSample = uniqueSample,
+            };
+        }
         return findings;
+    }
+
+    /// <summary>
+    /// Extensions Wabbajack inlines with no tag needed: Consts.ConfigFileExtensions
+    /// (IncludeAllConfigs) plus .txt (IncludeRegex(".*\.txt")). Note .toml is NOT in
+    /// the set. See docs/wabbajack-formats.md §2.1 steps 10 and 12.
+    /// </summary>
+    private static readonly HashSet<string> AutoInlinedExtensions = new(
+        [".json", ".ini", ".yml", ".xml", ".yaml", ".compiler_settings", ".mo2_compiler_settings", ".txt"],
+        StringComparer.OrdinalIgnoreCase);
+
+    private static IEnumerable<(string RelPath, string Name)> EnumerateModFiles(
+        Mo2Instance instance, string modName)
+    {
+        var modDir = Path.Combine(instance.SourcePath, "mods", modName);
+        if (!Directory.Exists(modDir))
+            yield break;
+
+        foreach (var file in Directory.EnumerateFiles(modDir, "*", SearchOption.AllDirectories))
+        {
+            var relPath = RelPaths.Normalize(Path.GetRelativePath(modDir, file));
+            if (RelPaths.Comparer.Equals(relPath, "meta.ini"))
+                continue; // MO2 metadata, not archive content
+            yield return (relPath, Path.GetFileName(file));
+        }
     }
 }
