@@ -33,15 +33,38 @@ public partial class MainViewModel : ViewModelBase
         [L.Get("LanguageSystem"), "English", "Deutsch", "Français", "Polski",
          "Русский", "Português (Brasil)", "Español", "简体中文"];
 
+    /// <summary>The language preference the current process was started with.</summary>
+    private readonly string? _startupLanguage = AppPreferences.Instance.Language;
+
     [ObservableProperty]
     private int _selectedLanguageIndex = Math.Max(0,
         Array.IndexOf(LanguageOptions, AppPreferences.Instance.Language));
+
+    [ObservableProperty]
+    private bool _languageChangePending;
 
     partial void OnSelectedLanguageIndexChanged(int value)
     {
         AppPreferences.Instance.Language =
             LanguageOptions[Math.Clamp(value, 0, LanguageOptions.Length - 1)];
         AppPreferences.Instance.Save(); // applied on next launch
+        LanguageChangePending = AppPreferences.Instance.Language != _startupLanguage;
+    }
+
+    /// <summary>Relaunches the app (same executable and arguments) so a changed
+    /// language preference takes effect.</summary>
+    [RelayCommand]
+    private void RestartApp()
+    {
+        if (Environment.ProcessPath is not { } exe)
+            return;
+        var startInfo = new System.Diagnostics.ProcessStartInfo(exe);
+        foreach (var arg in Environment.GetCommandLineArgs().Skip(1))
+            startInfo.ArgumentList.Add(arg);
+        System.Diagnostics.Process.Start(startInfo);
+        if (Application.Current?.ApplicationLifetime
+            is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+            desktop.Shutdown();
     }
 
     [ObservableProperty]

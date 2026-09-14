@@ -111,4 +111,6 @@
   <data name="AboutVersionFmt" xml:space="preserve"><value>Version {0}</value></data>
   <data name="AboutDescription" xml:space="preserve"><value>A cleanup tool for Wabbajack modlist authors. A supplement to Wabbajack, not a replacement — compile your list in Wabbajack itself. MIT licensed.</value></data>
   <data name="AboutRepoButton" xml:space="preserve"><value>GitHub repository</value></data>
+  <data name="RestartPendingNote" xml:space="preserve"><value>The new language will be used after a restart.</value></data>
+  <data name="RestartNowButton" xml:space="preserve"><value>Restart now</value></data>
 </root>

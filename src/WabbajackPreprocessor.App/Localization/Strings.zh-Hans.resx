@@ -108,4 +108,6 @@
   <data name="AboutVersionFmt" xml:space="preserve"><value>版本 {0}</value></data>
   <data name="AboutDescription" xml:space="preserve"><value>面向 Wabbajack 整合包作者的清理工具。它是 Wabbajack 的补充，而非替代——请仍在 Wabbajack 中编译你的整合包。MIT 许可。</value></data>
   <data name="AboutRepoButton" xml:space="preserve"><value>GitHub 仓库</value></data>
+  <data name="RestartPendingNote" xml:space="preserve"><value>新语言将在重启后使用。</value></data>
+  <data name="RestartNowButton" xml:space="preserve"><value>立即重启</value></data>
 </root>
