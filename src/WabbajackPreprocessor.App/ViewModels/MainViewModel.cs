@@ -120,6 +120,15 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private string _warningsHeader = L.Get("TabWarningsPlain");
 
+    // Counts shown as tab badges. Kept separate from the header strings (which now
+    // serve as accessible names) so the tab labels never change width at runtime —
+    // a header text change does not re-measure the tab strip until a resize.
+    [ObservableProperty] private int _staleCount;
+    [ObservableProperty] private int _redundantCount;
+    [ObservableProperty] private int _disabledCount;
+    [ObservableProperty] private int _downloadCount;
+    [ObservableProperty] private int _warningCount;
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
     private bool _hasAnalysis;
@@ -181,6 +190,13 @@ public partial class MainViewModel : ViewModelBase
             foreach (var warning in result.Warnings)
                 Warnings.Add(FormatWarning(warning));
 
+            StaleCount = staleCount;
+            RedundantCount = RedundantItems.Count;
+            DisabledCount = DisabledItems.Count;
+            DownloadCount = DownloadItems.Count;
+            WarningCount = Warnings.Count;
+
+            // Accessible names for the tabs (screen readers announce label + count).
             StaleHeader = L.F("TabCountFmt", L.Get("TabStalePlain"), staleCount);
             RedundantHeader = L.F("TabCountFmt", L.Get("TabRedundantPlain"), RedundantItems.Count);
             DisabledHeader = L.F("TabCountFmt", L.Get("TabDisabledPlain"), DisabledItems.Count);
