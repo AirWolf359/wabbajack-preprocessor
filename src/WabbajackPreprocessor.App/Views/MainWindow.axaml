@@ -62,9 +62,19 @@
 
     <DockPanel Margin="12">
 
-        <!-- Top: file selection -->
+        <!-- Top: file selection + theme -->
         <StackPanel DockPanel.Dock="Top" Spacing="6">
-            <TextBlock Text="Compiler settings file (.compiler_settings)" />
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Grid.Column="0" VerticalAlignment="Center"
+                           Text="Compiler settings file (.compiler_settings)" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                    <TextBlock Classes="detail" VerticalAlignment="Center" Text="Theme:" />
+                    <ComboBox Width="110"
+                              AutomationProperties.Name="Color theme"
+                              ItemsSource="{x:Static vm:MainViewModel.ThemeOptions}"
+                              SelectedIndex="{Binding SelectedThemeIndex}" />
+                </StackPanel>
+            </Grid>
             <Grid ColumnDefinitions="*,Auto,Auto">
                 <TextBox Grid.Column="0"
                          Text="{Binding SettingsPath}"
