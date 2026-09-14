@@ -17,25 +17,60 @@ public partial class StaleEntryItem : ObservableObject
     public StaleEntry Finding { get; }
 
     public string Entry => Finding.Entry;
-    public string Detail => Finding.Reason; // the tag list is shown by the group header
+
+    /// <summary>Shown only for findings whose reason varies per row (redundant
+    /// AlwaysEnabled names the enabling profile's mod); generic reasons live in the
+    /// sub-group header instead.</summary>
+    public string Detail => Finding.Kind == StaleEntryKind.RedundantAlwaysEnabled ? Finding.Reason : "";
+
+    public bool HasDetail => Detail.Length > 0;
 
     [ObservableProperty]
     private bool _remove;
 }
 
-/// <summary>One tag list's section on the "stale entries" tab.</summary>
-public sealed class StaleGroup(TagList list, IReadOnlyList<StaleEntryItem> items)
+/// <summary>A kind-based sub-list within one tag list's section (e.g. the missing
+/// entries vs. the redundant ones under Always enabled).</summary>
+public sealed class StaleSubGroup(StaleEntryKind kind, IReadOnlyList<StaleEntryItem> items)
 {
     public IReadOnlyList<StaleEntryItem> Items { get; } = items;
 
-    public string Header { get; } = list switch
+    public string Header { get; } = kind switch
     {
-        TagList.NoMatchInclude => "No match include",
-        TagList.Include => "Include",
-        TagList.Ignore => "Ignore",
-        TagList.AlwaysEnabled => "Always enabled",
-        _ => list.ToString(),
+        StaleEntryKind.Missing => "No longer exists",
+        StaleEntryKind.Duplicate => "Duplicate entries",
+        StaleEntryKind.RedundantAlwaysEnabled => "Already enabled in a profile — the tag currently has no effect",
+        _ => kind.ToString(),
     } + $" ({items.Count})";
+}
+
+/// <summary>One tag list's section on the "stale entries" tab.</summary>
+public sealed class StaleGroup
+{
+    public StaleGroup(TagList list, IReadOnlyList<StaleEntryItem> items)
+    {
+        Items = items;
+        Header = list switch
+        {
+            TagList.NoMatchInclude => "No match include",
+            TagList.Include => "Include",
+            TagList.Ignore => "Ignore",
+            TagList.AlwaysEnabled => "Always enabled",
+            _ => list.ToString(),
+        } + $" ({items.Count})";
+        SubGroups = items
+            .GroupBy(i => i.Finding.Kind)
+            .OrderBy(g => g.Key)
+            .Select(g => new StaleSubGroup(g.Key, [.. g]))
+            .ToList();
+    }
+
+    /// <summary>All of the section's items, flattened (used when applying).</summary>
+    public IReadOnlyList<StaleEntryItem> Items { get; }
+
+    public IReadOnlyList<StaleSubGroup> SubGroups { get; }
+
+    public string Header { get; }
 }
 
 /// <summary>Row for the "disabled mods" tab.</summary>
