@@ -63,7 +63,7 @@
             <TabItem Header="{Binding StaleHeader}">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
-                               Text="Entries in the settings file's tag lists that point at files or folders that no longer exist, duplicates, and Always Enabled tags that currently have no effect. Checked entries are removed when you apply." />
+                               Text="Dead references in the settings file's tag lists: entries pointing at files or folders that no longer exist, and duplicates. Removing them never changes what gets compiled. Checked entries are removed when you apply." />
                     <ScrollViewer>
                         <ItemsControl ItemsSource="{Binding StaleGroups}">
                             <ItemsControl.ItemTemplate>
@@ -103,6 +103,33 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="{Binding RedundantHeader}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
+                               Text="Mods still in the list whose Always Enabled tag currently does nothing, because the mod is enabled in every selected profile that lists it. (A mod disabled in even one selected profile is not shown — there the tag preserves that profile's disabled line.) Checking a mod removes its tag when you apply; keep the tag if you might disable the mod later." />
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding RedundantItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:StaleEntryItem">
+                                    <Border Classes="row">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <CheckBox Grid.Column="0" VerticalAlignment="Top"
+                                                      IsChecked="{Binding Remove}"
+                                                      ToolTip.Tip="Remove the Always Enabled tag" />
+                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                                <TextBlock Classes="itemTitle" Text="{Binding Entry}" />
+                                                <TextBlock Classes="detail" Text="{Binding Detail}"
+                                                           IsVisible="{Binding HasDetail}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

@@ -29,6 +29,9 @@ public partial class MainViewModel : ViewModelBase
     private string _staleHeader = "Stale entries";
 
     [ObservableProperty]
+    private string _redundantHeader = "Redundant Always Enabled";
+
+    [ObservableProperty]
     private string _disabledHeader = "Disabled mods";
 
     [ObservableProperty]
@@ -42,6 +45,7 @@ public partial class MainViewModel : ViewModelBase
     private bool _hasAnalysis;
 
     public ObservableCollection<StaleGroup> StaleGroups { get; } = [];
+    public ObservableCollection<StaleEntryItem> RedundantItems { get; } = [];
     public ObservableCollection<DisabledModItem> DisabledItems { get; } = [];
     public ObservableCollection<MissingDownloadItem> DownloadItems { get; } = [];
     public ObservableCollection<string> Warnings { get; } = [];
@@ -81,6 +85,10 @@ public partial class MainViewModel : ViewModelBase
                 StaleGroups.Add(new StaleGroup(group.Key, group.Select(f => new StaleEntryItem(f)).ToList()));
             var staleCount = StaleGroups.Sum(g => g.Items.Count);
 
+            RedundantItems.Clear();
+            foreach (var finding in result.RedundantAlwaysEnabled)
+                RedundantItems.Add(new StaleEntryItem(finding));
+
             DisabledItems.Clear();
             foreach (var finding in result.DisabledMods)
                 DisabledItems.Add(new DisabledModItem(finding));
@@ -94,6 +102,7 @@ public partial class MainViewModel : ViewModelBase
                 Warnings.Add(warning);
 
             StaleHeader = $"Stale entries ({staleCount})";
+            RedundantHeader = $"Redundant Always Enabled ({RedundantItems.Count})";
             DisabledHeader = $"Disabled mods ({DisabledItems.Count})";
             DownloadsHeader = $"No download ({DownloadItems.Count})";
             WarningsHeader = $"Warnings ({Warnings.Count})";
@@ -114,10 +123,11 @@ public partial class MainViewModel : ViewModelBase
                 $"Default profile: {Describe(_settings.Profile)}   •   Additional profiles: {additional}";
 
             HasAnalysis = true;
-            var total = staleCount + DisabledItems.Count + DownloadItems.Count;
+            var total = staleCount + RedundantItems.Count + DisabledItems.Count + DownloadItems.Count;
             StatusMessage = total == 0
                 ? "Analysis complete: nothing to clean up."
                 : $"Analysis complete: {staleCount} stale entries, " +
+                  $"{RedundantItems.Count} redundant Always Enabled tags, " +
                   $"{DisabledItems.Count} disabled mods, {DownloadItems.Count} mods without a download.";
         }
         catch (Exception ex)
@@ -138,6 +148,7 @@ public partial class MainViewModel : ViewModelBase
         var plan = new SettingsUpdatePlan();
         plan.RemoveEntries.AddRange(
             StaleGroups.SelectMany(g => g.Items).Where(i => i.Remove).Select(i => i.Finding));
+        plan.RemoveEntries.AddRange(RedundantItems.Where(i => i.Remove).Select(i => i.Finding));
         plan.MarkAlwaysEnabled.AddRange(DisabledItems.Where(i => i.MarkAlwaysEnabled).Select(i => i.ModName));
         foreach (var item in DownloadItems.Where(i => i.IsChanged))
         {
