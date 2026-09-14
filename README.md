@@ -12,23 +12,42 @@ generated content fails compilation because it can't be traced back to a downloa
 Wabbajack never cleans any of this up itself. This tool does.
 
 Point it at your `.compiler_settings` file and it cross-references the settings
-with your Mod Organizer 2 instance, then walks you through three interactive
-cleanup lists:
+with your Mod Organizer 2 instance — showing which profile is the default and
+which additional profiles are included — then walks you through interactive
+cleanup tabs, each holding exactly one kind of decision:
 
-- **Stale entries** — `NoMatchInclude` / `Include` / `Ignore` / `AlwaysEnabled`
-  entries that point at files or folders that no longer exist, duplicate entries,
-  and `AlwaysEnabled` tags that currently have no effect because the mod is
-  already enabled. Tick the ones to remove.
+- **Stale entries** — dead references in the `NoMatchInclude` / `Include` /
+  `Ignore` / `AlwaysEnabled` lists: entries pointing at files or folders that no
+  longer exist, plus duplicates, grouped by list. Removing them never changes
+  what gets compiled.
+- **Redundant Always Enabled** — mods whose `AlwaysEnabled` tag currently does
+  nothing because the mod is enabled in every selected profile that lists it.
+  (Multi-profile aware: a mod disabled in even one selected profile keeps its
+  tag unflagged, since the tag preserves that profile's disabled line.)
 - **Disabled mods** — mods disabled in every selected profile, which Wabbajack
   would silently skip. Choose which ones to mark **Always Enabled** so they ship
   (still disabled) for users to opt into.
-- **Mods without a download** — mods that will be compiled but can't be traced to
-  any archive in your downloads folder. Choose **Include** (always embed) or
-  **No match include** (embed only what nothing else matches — the usual choice
-  for generated content such as merges, BodySlide output, or patch output).
+- **No download** — mods that will be compiled but can't be traced to any
+  archive in your downloads folder. Each row shows the mod's current tag and
+  lets you set it to **Include**, **No match include**, or untagged. Likely
+  patch mods are flagged: files that also exist in downloaded mods are stored
+  by Wabbajack as binary diffs, and config/text files are inlined
+  automatically, so the row tells you whether a tag is actually needed and
+  which files drive that.
 
-A warnings tab also flags downloads missing their `.meta` sidecar and `.meta`
-files marked `unknownArchive=true`.
+A warnings tab also flags missing profiles, downloads missing their `.meta`
+sidecar, and `.meta` files marked `unknownArchive=true`.
+
+## A supplement to Wabbajack, not a replacement
+
+This tool deliberately does **only** pre-compilation cleanup. It does not
+compile modlists, does not wrap or invoke the Wabbajack CLI, and never will —
+that is a deliberate scope decision, not a missing feature. The Wabbajack team
+builds and maintains the hard parts (compilation, downloaders, hosting,
+validation), and this project exists to support that work, not to absorb its
+interface. Run this tool to tidy your compiler settings, then compile in
+Wabbajack itself as usual. Contributions that turn this into a compilation
+front end will be declined.
 
 Applying your choices rewrites the settings file **after saving a timestamped
 backup next to it**. The writer reproduces Wabbajack's own JSON formatting
@@ -51,6 +70,15 @@ byte-for-byte, so untouched parts of the file never change.
 > purely by hash, so a flagged mod may still compile fine if its files happen to
 > match another archive. The tool tells you what deserves a look; the decision
 > stays yours.
+
+## Accessibility
+
+The app supports Windows assistive technology via UI Automation: it works with
+screen readers (Narrator, NVDA, JAWS), every control — including each row's
+checkbox and tag dropdown — announces what it acts on, the whole UI is keyboard
+navigable with visible focus, and status updates are announced as they happen.
+Accessibility is a standing requirement for UI changes here; if you hit
+something that doesn't work with your assistive setup, please open an issue.
 
 ## Building from source
 
