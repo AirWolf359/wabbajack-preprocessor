@@ -68,6 +68,7 @@
             <Grid ColumnDefinitions="*,Auto,Auto">
                 <TextBox Grid.Column="0"
                          Text="{Binding SettingsPath}"
+                         AutomationProperties.Name="Compiler settings file path"
                          PlaceholderText="Path to your &lt;modlist&gt;.compiler_settings file" />
                 <Button Grid.Column="1" Margin="6,0,0,0" Content="Browse…" Click="OnBrowseClicked" />
                 <Button Grid.Column="2" Margin="6,0,0,0" Content="Analyze"
@@ -81,6 +82,8 @@
         <!-- Bottom: status + apply -->
         <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto" Margin="0,10,0,0">
             <TextBlock Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"
+                       AutomationProperties.LiveSetting="Polite"
+                       AutomationProperties.Name="Status"
                        Text="{Binding StatusMessage}" />
             <Button Grid.Column="1" Content="Apply changes" Classes="accent"
                     Command="{Binding ApplyCommand}" />
@@ -116,7 +119,8 @@
                                                                     <Border Classes="row">
                                                                         <Grid ColumnDefinitions="Auto,*">
                                                                             <CheckBox Grid.Column="0" VerticalAlignment="Top"
-                                                                                      IsChecked="{Binding Remove}" />
+                                                                                      IsChecked="{Binding Remove}"
+                                                                                      AutomationProperties.Name="{Binding Entry, StringFormat='Remove {0} from the settings file'}" />
                                                                             <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                                                                 <TextBlock Classes="itemTitle" Text="{Binding Entry}" />
                                                                                 <TextBlock Classes="detail" Text="{Binding Detail}"
@@ -151,6 +155,7 @@
                                         <Grid ColumnDefinitions="Auto,*">
                                             <CheckBox Grid.Column="0" VerticalAlignment="Top"
                                                       IsChecked="{Binding Remove}"
+                                                      AutomationProperties.Name="{Binding Entry, StringFormat='Remove the Always Enabled tag from {0}'}"
                                                       ToolTip.Tip="Remove the Always Enabled tag" />
                                             <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                                 <TextBlock Classes="itemTitle" Text="{Binding Entry}" />
@@ -178,6 +183,7 @@
                                         <Grid ColumnDefinitions="Auto,*">
                                             <CheckBox Grid.Column="0" VerticalAlignment="Top"
                                                       IsChecked="{Binding MarkAlwaysEnabled}"
+                                                      AutomationProperties.Name="{Binding ModName, StringFormat='Mark {0} as Always Enabled'}"
                                                       ToolTip.Tip="Add to AlwaysEnabled" />
                                             <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                                 <TextBlock Classes="itemTitle" Text="{Binding ModName}" />
@@ -211,6 +217,7 @@
                                                            IsVisible="{Binding HasOverlapSummary}" />
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" Width="170" VerticalAlignment="Top"
+                                                      AutomationProperties.Name="{Binding ModName, StringFormat='Tag action for {0}'}"
                                                       ItemsSource="{x:Static vm:MissingDownloadItem.Actions}"
                                                       SelectedIndex="{Binding SelectedActionIndex}" />
                                         </Grid>
