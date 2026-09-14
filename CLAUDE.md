@@ -56,3 +56,12 @@ parser or serialization behavior.
 - Source control: never commit directly to `main`. Branch (`feature/…`, `fix/…`,
   `ci/…`, `docs/…`) → PR → wait for green CI → squash merge, delete branch.
   Releases are cut by tagging `vX.Y.Z`.
+- **Accessibility is a first-class requirement for every UI change.** Avalonia
+  exposes UI Automation on Windows, but only if we do our part: every interactive
+  control needs an accessible name (`AutomationProperties.Name`, bound per-row for
+  repeated items — an unlabeled CheckBox announces as just "checkbox"), everything
+  must be keyboard-operable with a visible focus indicator, status/progress text
+  uses `AutomationProperties.LiveSetting="Polite"` so screen readers announce
+  changes, and information must never be conveyed by color alone. Verify changes
+  with a UIA tree walk (see the accessibility PR) or Windows Narrator /
+  Accessibility Insights before shipping.
