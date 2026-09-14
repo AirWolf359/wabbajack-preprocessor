@@ -17,6 +17,13 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
+    <Window.Resources>
+        <!-- Fluent bakes a 2px bottom margin under the tab strip directly into the
+             TabControl template via this resource; zero it so the selected tab sits
+             flush against the content panel. -->
+        <Thickness x:Key="TabControlTopPlacementItemMargin">0</Thickness>
+    </Window.Resources>
+
     <Window.Styles>
         <Style Selector="TextBlock.detail">
             <Setter Property="Opacity" Value="0.65" />
@@ -39,14 +46,19 @@
              flush against it, so the pair reads as one connected surface; Fluent's
              selection pipe (which hugged the label like an underline) is hidden. -->
         <Style Selector="TabControl">
-            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="Padding" Value="0" />
             <Setter Property="ItemsPanel">
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" Spacing="4" />
                 </ItemsPanelTemplate>
             </Setter>
         </Style>
+        <!-- Fluent's template maps TabControl.Padding to the content host's MARGIN,
+             which would open a transparent gap around the panel: zero it and pad
+             inside the tinted panel instead. -->
         <Style Selector="TabControl /template/ ContentPresenter#PART_SelectedContentHost">
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="12,10" />
             <Setter Property="Background" Value="#20808080" />
             <Setter Property="CornerRadius" Value="0,6,6,6" />
         </Style>
