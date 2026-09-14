@@ -24,6 +24,17 @@
         <TextBlock FontSize="12" Opacity="0.65" TextWrapping="Wrap"
                    Text="{Binding [SettingsThemeNote], Source={x:Static loc:L.Instance}}" />
 
+        <Grid ColumnDefinitions="120,*" RowDefinitions="Auto" Margin="0,6,0,0">
+            <TextBlock Grid.Column="0" VerticalAlignment="Center"
+                       Text="{Binding [LanguageLabel], Source={x:Static loc:L.Instance}}" />
+            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+                      AutomationProperties.Name="{Binding [LanguageAccessibleName], Source={x:Static loc:L.Instance}}"
+                      ItemsSource="{x:Static vm:MainViewModel.LanguageDisplayOptions}"
+                      SelectedIndex="{Binding SelectedLanguageIndex}" />
+        </Grid>
+        <TextBlock FontSize="12" Opacity="0.65" TextWrapping="Wrap"
+                   Text="{Binding [SettingsLanguageNote], Source={x:Static loc:L.Instance}}" />
+
         <Button HorizontalAlignment="Right" Margin="0,8,0,0"
                 IsDefault="True" IsCancel="True" Click="OnCloseClicked"
                 Content="{Binding [CloseButton], Source={x:Static loc:L.Instance}}" />

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="MenuFile" xml:space="preserve"><value>_Файл</value></data>
+  <data name="MenuOpenSettingsFile" xml:space="preserve"><value>_Открыть файл настроек…</value></data>
+  <data name="MenuExit" xml:space="preserve"><value>В_ыход</value></data>
+  <data name="MenuTools" xml:space="preserve"><value>_Сервис</value></data>
+  <data name="MenuSettingsItem" xml:space="preserve"><value>_Настройки…</value></data>
+  <data name="MenuHelp" xml:space="preserve"><value>Спр_авка</value></data>
+  <data name="MenuGitHub" xml:space="preserve"><value>Репозиторий _GitHub</value></data>
+  <data name="MenuAbout" xml:space="preserve"><value>_О программе…</value></data>
+
+  <data name="SettingsFileLabel" xml:space="preserve"><value>Файл настроек компилятора (.compiler_settings)</value></data>
+  <data name="SettingsFilePlaceholder" xml:space="preserve"><value>Путь к файлу &lt;модлист&gt;.compiler_settings</value></data>
+  <data name="SettingsFileAccessibleName" xml:space="preserve"><value>Путь к файлу настроек компилятора</value></data>
+  <data name="BrowseButton" xml:space="preserve"><value>Обзор…</value></data>
+  <data name="AnalyzeButton" xml:space="preserve"><value>Анализировать</value></data>
+  <data name="ApplyButton" xml:space="preserve"><value>Применить изменения</value></data>
+  <data name="StatusAccessibleName" xml:space="preserve"><value>Состояние</value></data>
+  <data name="StatusInitial" xml:space="preserve"><value>Выберите файл .compiler_settings и нажмите «Анализировать».</value></data>
+  <data name="FilePickerTitle" xml:space="preserve"><value>Выберите файл настроек компилятора</value></data>
+  <data name="FilePickerFilterName" xml:space="preserve"><value>Настройки компилятора Wabbajack</value></data>
+
+  <data name="TabStalePlain" xml:space="preserve"><value>Устаревшие записи</value></data>
+  <data name="TabRedundantPlain" xml:space="preserve"><value>Лишний Always Enabled</value></data>
+  <data name="TabDisabledPlain" xml:space="preserve"><value>Отключённые моды</value></data>
+  <data name="TabNoDownloadPlain" xml:space="preserve"><value>Без загрузки</value></data>
+  <data name="TabWarningsPlain" xml:space="preserve"><value>Предупреждения</value></data>
+
+  <data name="DescStale" xml:space="preserve"><value>Мёртвые ссылки в списках тегов файла настроек: записи, указывающие на несуществующие файлы или папки, а также дубликаты. Их удаление никогда не меняет то, что будет скомпилировано. Отмеченные записи удаляются при применении.</value></data>
+  <data name="DescRedundant" xml:space="preserve"><value>Моды, всё ещё присутствующие в списке, чей тег Always Enabled сейчас ничего не делает, потому что мод включён в каждом выбранном профиле, где он указан. (Мод, отключённый хотя бы в одном выбранном профиле, не показывается — там тег сохраняет отключённую строку этого профиля.) Отметка мода удаляет его тег при применении; оставьте тег, если позже можете отключить мод.</value></data>
+  <data name="DescDisabled" xml:space="preserve"><value>Моды, отключённые в каждом выбранном профиле. Wabbajack пропускает их, если не отметить их как Always Enabled (их файлы попадут в сборку, по-прежнему отключёнными, чтобы пользователи могли включить их сами).</value></data>
+  <data name="DescNoDownload" xml:space="preserve"><value>Моды, которые будут скомпилированы, но их не удаётся связать ни с одним архивом загрузок. Их файлы должны быть встроены в модлист: Include встраивает их безусловно; No match include встраивает только то, что не сопоставилось ни с чем другим (обычный выбор для сгенерированного контента). Каждая строка показывает текущий тег мода; измените значение в списке, чтобы сменить или убрать тег.</value></data>
+
+  <data name="ListNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="ListInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="ListIgnore" xml:space="preserve"><value>Ignore</value></data>
+  <data name="ListAlwaysEnabled" xml:space="preserve"><value>Always enabled</value></data>
+  <data name="SubMissing" xml:space="preserve"><value>Больше не существует</value></data>
+  <data name="SubDuplicate" xml:space="preserve"><value>Дублирующиеся записи</value></data>
+  <data name="RedundantReasonFmt" xml:space="preserve"><value>Мод «{0}» включён в каждом выбранном профиле, где он указан; тег сейчас ничего не делает.</value></data>
+  <data name="RemoveEntryAccessibleFmt" xml:space="preserve"><value>Удалить {0} из файла настроек</value></data>
+  <data name="RemoveAETagAccessibleFmt" xml:space="preserve"><value>Убрать тег Always Enabled у {0}</value></data>
+  <data name="RemoveAETagTooltip" xml:space="preserve"><value>Убрать тег Always Enabled</value></data>
+
+  <data name="DisabledInFmt" xml:space="preserve"><value>Отключён в: {0}</value></data>
+  <data name="NotListedNote" xml:space="preserve"><value>Не указан в modlist.txt ни одного выбранного профиля.</value></data>
+  <data name="MarkAEAccessibleFmt" xml:space="preserve"><value>Отметить {0} как Always Enabled</value></data>
+  <data name="MarkAETooltip" xml:space="preserve"><value>Добавить в AlwaysEnabled</value></data>
+
+  <data name="ReasonNoMetaIni" xml:space="preserve"><value>Нет meta.ini — вероятно, папка мода создана вручную или сгенерирована.</value></data>
+  <data name="ReasonArchiveNotFoundFmt" xml:space="preserve"><value>Установлен из «{0}», которого нет в папке загрузок.</value></data>
+  <data name="ReasonNoInstallationFile" xml:space="preserve"><value>В meta.ini не записан установочный архив.</value></data>
+  <data name="CurrentlyFmt" xml:space="preserve"><value>Сейчас: {0}</value></data>
+  <data name="TagStatusInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="TagStatusNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="TagStatusBoth" xml:space="preserve"><value>Include + No match include</value></data>
+  <data name="TagStatusUntagged" xml:space="preserve"><value>без тега</value></data>
+  <data name="ActionUntagged" xml:space="preserve"><value>Без тега</value></data>
+  <data name="ActionInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="ActionNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="TagActionAccessibleFmt" xml:space="preserve"><value>Действие тега для {0}</value></data>
+  <data name="OverlapNoFiles" xml:space="preserve"><value>Папка мода не содержит файлов.</value></data>
+  <data name="OverlapDiffPartFmt" xml:space="preserve"><value>{0} также существуют в загруженных модах (сохраняются как двоичные диффы)</value></data>
+  <data name="OverlapConfigPartFmt" xml:space="preserve"><value>{0} — файлы конфигурации/текста, которые Wabbajack всегда встраивает</value></data>
+  <data name="OverlapAllFmt" xml:space="preserve"><value>⚑ Все {0} файл(ов) обрабатываются без тега: {1}. Тег не обязателен (No match include — безопасная подстраховка; избегайте Include).</value></data>
+  <data name="OverlapPartialFmt" xml:space="preserve"><value>⚑ {0} из {1} файлов обрабатываются без тега ({2}) — {3} уникальный(х) файл(ов) всё ещё требуют встраивания (напр. {4}); рекомендуется No match include.</value></data>
+
+  <data name="WarnProfileNotFoundFmt" xml:space="preserve"><value>Для профиля «{0}» из файла настроек нет profiles\{0}\modlist.txt в экземпляре.</value></data>
+  <data name="WarnNoProfiles" xml:space="preserve"><value>Ни один из выбранных профилей не найден; проверки отключённых модов и загрузок ограничены.</value></data>
+  <data name="WarnDownloadsFolderMissingFmt" xml:space="preserve"><value>Папка загрузок «{0}» не существует.</value></data>
+  <data name="WarnDownloadsWithoutMetaFmt" xml:space="preserve"><value>У {0} файла(ов) в папке загрузок нет сопутствующего файла .meta; Wabbajack попытается определить их источник или проигнорирует их.</value></data>
+  <data name="WarnUnknownArchiveMetasFmt" xml:space="preserve"><value>{0} файл(ов) .meta загрузок помечены unknownArchive=true; компиляция завершится ошибкой, если сопоставленному файлу они понадобятся.</value></data>
+
+  <data name="InstanceSummaryFmt" xml:space="preserve"><value>{0} — источник: {1} — модов: {2}, загрузок: {3}</value></data>
+  <data name="ProfilesSummaryFmt" xml:space="preserve"><value>Профиль по умолчанию: {0}   •   Дополнительные профили: {1}</value></data>
+  <data name="ProfileNoneSet" xml:space="preserve"><value>(не задан)</value></data>
+  <data name="ProfileNotFoundFmt" xml:space="preserve"><value>{0} (не найден на диске!)</value></data>
+  <data name="AdditionalNone" xml:space="preserve"><value>нет</value></data>
+
+  <data name="StatusFileNotFoundFmt" xml:space="preserve"><value>Файл не найден: {0}</value></data>
+  <data name="StatusAnalysisFailedFmt" xml:space="preserve"><value>Анализ не удался: {0}</value></data>
+  <data name="StatusNothingToClean" xml:space="preserve"><value>Анализ завершён: убирать нечего.</value></data>
+  <data name="StatusAnalysisSummaryFmt" xml:space="preserve"><value>Анализ завершён: устаревших записей — {0}, лишних тегов Always Enabled — {1}, отключённых модов — {2}, модов без загрузки — {3}.</value></data>
+  <data name="StatusNoChanges" xml:space="preserve"><value>Изменения не выбраны.</value></data>
+  <data name="StatusSavedFmt" xml:space="preserve"><value>Сохранено изменений: {0} — в {1}.</value></data>
+  <data name="StatusSavedBackupFmt" xml:space="preserve"><value>Сохранено изменений: {0}. Резервная копия: {1}</value></data>
+  <data name="StatusSaveFailedFmt" xml:space="preserve"><value>Сохранение не удалось: {0}</value></data>
+
+  <data name="SettingsTitle" xml:space="preserve"><value>Настройки</value></data>
+  <data name="LanguageLabel" xml:space="preserve"><value>Язык</value></data>
+  <data name="LanguageSystem" xml:space="preserve"><value>Системный (язык Windows)</value></data>
+  <data name="LanguageAccessibleName" xml:space="preserve"><value>Язык</value></data>
+  <data name="SettingsLanguageNote" xml:space="preserve"><value>Смена языка вступит в силу после перезапуска приложения. Переводы подготовлены автоматически — исправления приветствуются на GitHub.</value></data>
+  <data name="ThemeLabel" xml:space="preserve"><value>Тема</value></data>
+  <data name="ThemeSystem" xml:space="preserve"><value>Системная</value></data>
+  <data name="ThemeDark" xml:space="preserve"><value>Тёмная</value></data>
+  <data name="ThemeLight" xml:space="preserve"><value>Светлая</value></data>
+  <data name="SettingsThemeNote" xml:space="preserve"><value>«Системная» следует режиму приложений Windows. Изменения применяются сразу и запоминаются.</value></data>
+  <data name="ColorThemeAccessibleName" xml:space="preserve"><value>Цветовая тема</value></data>
+  <data name="CloseButton" xml:space="preserve"><value>Закрыть</value></data>
+
+  <data name="AboutTitle" xml:space="preserve"><value>О программе</value></data>
+  <data name="AboutVersionFmt" xml:space="preserve"><value>Версия {0}</value></data>
+  <data name="AboutDescription" xml:space="preserve"><value>Инструмент очистки для авторов модлистов Wabbajack. Дополнение к Wabbajack, а не замена — компилируйте список в самом Wabbajack. Лицензия MIT.</value></data>
+  <data name="AboutRepoButton" xml:space="preserve"><value>Репозиторий GitHub</value></data>
+</root>

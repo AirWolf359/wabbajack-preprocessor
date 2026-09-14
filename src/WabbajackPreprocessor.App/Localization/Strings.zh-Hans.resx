@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="MenuFile" xml:space="preserve"><value>文件(_F)</value></data>
+  <data name="MenuOpenSettingsFile" xml:space="preserve"><value>打开设置文件(_O)…</value></data>
+  <data name="MenuExit" xml:space="preserve"><value>退出(_X)</value></data>
+  <data name="MenuTools" xml:space="preserve"><value>工具(_T)</value></data>
+  <data name="MenuSettingsItem" xml:space="preserve"><value>设置(_S)…</value></data>
+  <data name="MenuHelp" xml:space="preserve"><value>帮助(_H)</value></data>
+  <data name="MenuGitHub" xml:space="preserve"><value>GitHub 仓库(_G)</value></data>
+  <data name="MenuAbout" xml:space="preserve"><value>关于(_A)…</value></data>
+
+  <data name="SettingsFileLabel" xml:space="preserve"><value>编译器设置文件 (.compiler_settings)</value></data>
+  <data name="SettingsFilePlaceholder" xml:space="preserve"><value>你的 &lt;整合包&gt;.compiler_settings 文件路径</value></data>
+  <data name="SettingsFileAccessibleName" xml:space="preserve"><value>编译器设置文件路径</value></data>
+  <data name="BrowseButton" xml:space="preserve"><value>浏览…</value></data>
+  <data name="AnalyzeButton" xml:space="preserve"><value>分析</value></data>
+  <data name="ApplyButton" xml:space="preserve"><value>应用更改</value></data>
+  <data name="StatusAccessibleName" xml:space="preserve"><value>状态</value></data>
+  <data name="StatusInitial" xml:space="preserve"><value>选择一个 .compiler_settings 文件，然后点击“分析”。</value></data>
+  <data name="FilePickerTitle" xml:space="preserve"><value>选择编译器设置文件</value></data>
+  <data name="FilePickerFilterName" xml:space="preserve"><value>Wabbajack 编译器设置</value></data>
+
+  <data name="TabStalePlain" xml:space="preserve"><value>失效条目</value></data>
+  <data name="TabRedundantPlain" xml:space="preserve"><value>多余的 Always Enabled</value></data>
+  <data name="TabDisabledPlain" xml:space="preserve"><value>已禁用的模组</value></data>
+  <data name="TabNoDownloadPlain" xml:space="preserve"><value>无下载来源</value></data>
+  <data name="TabWarningsPlain" xml:space="preserve"><value>警告</value></data>
+
+  <data name="DescStale" xml:space="preserve"><value>设置文件标签列表中的失效引用：指向已不存在的文件或文件夹的条目，以及重复条目。删除它们绝不会改变编译结果。应用时将删除勾选的条目。</value></data>
+  <data name="DescRedundant" xml:space="preserve"><value>仍在列表中、但其 Always Enabled 标签目前不起作用的模组，因为该模组在每个列出它的已选配置文件中都已启用。（在任何一个已选配置文件中被禁用的模组不会显示——在那里该标签会保留该配置文件的禁用行。）勾选模组会在应用时移除其标签；如果以后可能禁用该模组，请保留标签。</value></data>
+  <data name="DescDisabled" xml:space="preserve"><value>在所有已选配置文件中都被禁用的模组。除非将它们标记为 Always Enabled（其文件会随整合包一起发布，仍保持禁用，由用户自行启用），否则 Wabbajack 会跳过它们。</value></data>
+  <data name="DescNoDownload" xml:space="preserve"><value>将被编译、但无法关联到任何下载压缩包的模组。它们的文件必须内嵌进整合包：Include 无条件内嵌；No match include 只内嵌其他步骤都无法匹配的内容（生成内容的常规选择）。每行显示模组当前的标签；更改下拉框即可改标签或去掉标签。</value></data>
+
+  <data name="ListNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="ListInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="ListIgnore" xml:space="preserve"><value>Ignore</value></data>
+  <data name="ListAlwaysEnabled" xml:space="preserve"><value>Always enabled</value></data>
+  <data name="SubMissing" xml:space="preserve"><value>已不存在</value></data>
+  <data name="SubDuplicate" xml:space="preserve"><value>重复条目</value></data>
+  <data name="RedundantReasonFmt" xml:space="preserve"><value>模组“{0}”在每个列出它的已选配置文件中都已启用；该标签目前不起作用。</value></data>
+  <data name="RemoveEntryAccessibleFmt" xml:space="preserve"><value>从设置文件中删除 {0}</value></data>
+  <data name="RemoveAETagAccessibleFmt" xml:space="preserve"><value>移除 {0} 的 Always Enabled 标签</value></data>
+  <data name="RemoveAETagTooltip" xml:space="preserve"><value>移除 Always Enabled 标签</value></data>
+
+  <data name="DisabledInFmt" xml:space="preserve"><value>禁用于：{0}</value></data>
+  <data name="NotListedNote" xml:space="preserve"><value>未出现在任何已选配置文件的 modlist.txt 中。</value></data>
+  <data name="MarkAEAccessibleFmt" xml:space="preserve"><value>将 {0} 标记为 Always Enabled</value></data>
+  <data name="MarkAETooltip" xml:space="preserve"><value>添加到 AlwaysEnabled</value></data>
+
+  <data name="ReasonNoMetaIni" xml:space="preserve"><value>没有 meta.ini——很可能是手动创建或生成的模组文件夹。</value></data>
+  <data name="ReasonArchiveNotFoundFmt" xml:space="preserve"><value>安装来源为“{0}”，但它不在下载文件夹中。</value></data>
+  <data name="ReasonNoInstallationFile" xml:space="preserve"><value>meta.ini 中没有记录安装压缩包。</value></data>
+  <data name="CurrentlyFmt" xml:space="preserve"><value>当前：{0}</value></data>
+  <data name="TagStatusInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="TagStatusNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="TagStatusBoth" xml:space="preserve"><value>Include + No match include</value></data>
+  <data name="TagStatusUntagged" xml:space="preserve"><value>无标签</value></data>
+  <data name="ActionUntagged" xml:space="preserve"><value>无标签</value></data>
+  <data name="ActionInclude" xml:space="preserve"><value>Include</value></data>
+  <data name="ActionNoMatchInclude" xml:space="preserve"><value>No match include</value></data>
+  <data name="TagActionAccessibleFmt" xml:space="preserve"><value>{0} 的标签操作</value></data>
+  <data name="OverlapNoFiles" xml:space="preserve"><value>模组文件夹中没有任何文件。</value></data>
+  <data name="OverlapDiffPartFmt" xml:space="preserve"><value>{0} 个也存在于已下载的模组中（以二进制差异存储）</value></data>
+  <data name="OverlapConfigPartFmt" xml:space="preserve"><value>{0} 个是 Wabbajack 总会内嵌的配置/文本文件</value></data>
+  <data name="OverlapAllFmt" xml:space="preserve"><value>⚑ 全部 {0} 个文件无需标签即可处理：{1}。并非必须加标签（No match include 是安全的保险；避免使用 Include）。</value></data>
+  <data name="OverlapPartialFmt" xml:space="preserve"><value>⚑ {1} 个文件中有 {0} 个无需标签即可处理（{2}）——仍有 {3} 个独有文件需要内嵌（例如 {4}）；建议使用 No match include。</value></data>
+
+  <data name="WarnProfileNotFoundFmt" xml:space="preserve"><value>设置文件中的配置文件“{0}”在实例中没有 profiles\{0}\modlist.txt。</value></data>
+  <data name="WarnNoProfiles" xml:space="preserve"><value>未找到任何已选配置文件；已禁用模组与下载来源的检查受限。</value></data>
+  <data name="WarnDownloadsFolderMissingFmt" xml:space="preserve"><value>下载文件夹“{0}”不存在。</value></data>
+  <data name="WarnDownloadsWithoutMetaFmt" xml:space="preserve"><value>下载文件夹中有 {0} 个文件缺少 .meta 附属文件；Wabbajack 会尝试推断其来源或忽略它们。</value></data>
+  <data name="WarnUnknownArchiveMetasFmt" xml:space="preserve"><value>有 {0} 个下载 .meta 文件被标记为 unknownArchive=true；若有匹配文件需要它们，编译将失败。</value></data>
+
+  <data name="InstanceSummaryFmt" xml:space="preserve"><value>{0} — 源目录：{1} — {2} 个模组，{3} 个下载</value></data>
+  <data name="ProfilesSummaryFmt" xml:space="preserve"><value>默认配置文件：{0}   •   附加配置文件：{1}</value></data>
+  <data name="ProfileNoneSet" xml:space="preserve"><value>（未设置）</value></data>
+  <data name="ProfileNotFoundFmt" xml:space="preserve"><value>{0}（磁盘上未找到！）</value></data>
+  <data name="AdditionalNone" xml:space="preserve"><value>无</value></data>
+
+  <data name="StatusFileNotFoundFmt" xml:space="preserve"><value>找不到文件：{0}</value></data>
+  <data name="StatusAnalysisFailedFmt" xml:space="preserve"><value>分析失败：{0}</value></data>
+  <data name="StatusNothingToClean" xml:space="preserve"><value>分析完成：没有需要清理的内容。</value></data>
+  <data name="StatusAnalysisSummaryFmt" xml:space="preserve"><value>分析完成：{0} 个失效条目，{1} 个多余的 Always Enabled 标签，{2} 个已禁用模组，{3} 个无下载来源的模组。</value></data>
+  <data name="StatusNoChanges" xml:space="preserve"><value>未选择任何更改。</value></data>
+  <data name="StatusSavedFmt" xml:space="preserve"><value>已将 {0} 项更改保存到 {1}。</value></data>
+  <data name="StatusSavedBackupFmt" xml:space="preserve"><value>已保存 {0} 项更改。备份：{1}</value></data>
+  <data name="StatusSaveFailedFmt" xml:space="preserve"><value>保存失败：{0}</value></data>
+
+  <data name="SettingsTitle" xml:space="preserve"><value>设置</value></data>
+  <data name="LanguageLabel" xml:space="preserve"><value>语言</value></data>
+  <data name="LanguageSystem" xml:space="preserve"><value>系统（Windows 语言）</value></data>
+  <data name="LanguageAccessibleName" xml:space="preserve"><value>语言</value></data>
+  <data name="SettingsLanguageNote" xml:space="preserve"><value>语言更改将在重启应用后生效。译文由机器起草——欢迎在 GitHub 上提交修正。</value></data>
+  <data name="ThemeLabel" xml:space="preserve"><value>主题</value></data>
+  <data name="ThemeSystem" xml:space="preserve"><value>跟随系统</value></data>
+  <data name="ThemeDark" xml:space="preserve"><value>深色</value></data>
+  <data name="ThemeLight" xml:space="preserve"><value>浅色</value></data>
+  <data name="SettingsThemeNote" xml:space="preserve"><value>“跟随系统”遵循 Windows 的应用模式。更改立即生效并会被记住。</value></data>
+  <data name="ColorThemeAccessibleName" xml:space="preserve"><value>颜色主题</value></data>
+  <data name="CloseButton" xml:space="preserve"><value>关闭</value></data>
+
+  <data name="AboutTitle" xml:space="preserve"><value>关于</value></data>
+  <data name="AboutVersionFmt" xml:space="preserve"><value>版本 {0}</value></data>
+  <data name="AboutDescription" xml:space="preserve"><value>面向 Wabbajack 整合包作者的清理工具。它是 Wabbajack 的补充，而非替代——请仍在 Wabbajack 中编译你的整合包。MIT 许可。</value></data>
+  <data name="AboutRepoButton" xml:space="preserve"><value>GitHub 仓库</value></data>
+</root>
