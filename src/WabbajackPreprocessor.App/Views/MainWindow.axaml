@@ -1,0 +1,154 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:WabbajackPreprocessor.App.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="950" d:DesignHeight="650"
+        x:Class="WabbajackPreprocessor.App.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Width="950" Height="650"
+        Title="Wabbajack Compiler Settings Preprocessor">
+
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="TextBlock.detail">
+            <Setter Property="Opacity" Value="0.65" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="TextBlock.itemTitle">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="Border.row">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="BorderBrush" Value="#40808080" />
+        </Style>
+    </Window.Styles>
+
+    <DockPanel Margin="12">
+
+        <!-- Top: file selection -->
+        <StackPanel DockPanel.Dock="Top" Spacing="6">
+            <TextBlock Text="Compiler settings file (.compiler_settings)" />
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <TextBox Grid.Column="0"
+                         Text="{Binding SettingsPath}"
+                         PlaceholderText="Path to your &lt;modlist&gt;.compiler_settings file" />
+                <Button Grid.Column="1" Margin="6,0,0,0" Content="Browse…" Click="OnBrowseClicked" />
+                <Button Grid.Column="2" Margin="6,0,0,0" Content="Analyze"
+                        Command="{Binding AnalyzeCommand}" Classes="accent" />
+            </Grid>
+            <TextBlock Classes="detail" Text="{Binding InstanceSummary}" />
+        </StackPanel>
+
+        <!-- Bottom: status + apply -->
+        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"
+                       Text="{Binding StatusMessage}" />
+            <Button Grid.Column="1" Content="Apply changes" Classes="accent"
+                    Command="{Binding ApplyCommand}" />
+        </Grid>
+
+        <!-- Findings -->
+        <TabControl Margin="0,10,0,0">
+
+            <TabItem Header="{Binding StaleHeader}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
+                               Text="Entries in the settings file's tag lists that point at files or folders that no longer exist, duplicates, and Always Enabled tags that currently have no effect. Checked entries are removed when you apply." />
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding StaleItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:StaleEntryItem">
+                                    <Border Classes="row">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <CheckBox Grid.Column="0" VerticalAlignment="Top"
+                                                      IsChecked="{Binding Remove}" />
+                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                                <TextBlock Classes="itemTitle" Text="{Binding Entry}" />
+                                                <TextBlock Classes="detail" Text="{Binding Detail}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="{Binding DisabledHeader}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
+                               Text="Mods that are disabled in every selected profile. Wabbajack skips them unless you mark them Always Enabled (their files ship, still disabled, for users to opt into)." />
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding DisabledItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:DisabledModItem">
+                                    <Border Classes="row">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <CheckBox Grid.Column="0" VerticalAlignment="Top"
+                                                      IsChecked="{Binding MarkAlwaysEnabled}"
+                                                      ToolTip.Tip="Add to AlwaysEnabled" />
+                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                                <TextBlock Classes="itemTitle" Text="{Binding ModName}" />
+                                                <TextBlock Classes="detail" Text="{Binding Note}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="{Binding DownloadsHeader}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
+                               Text="Mods that will be compiled but can't be traced to a download archive. Their files must be inlined into the modlist: Include embeds them unconditionally; No match include embeds only what nothing else matches (the usual choice for generated content)." />
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding DownloadItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:MissingDownloadItem">
+                                    <Border Classes="row">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                <TextBlock Classes="itemTitle" Text="{Binding ModName}" />
+                                                <TextBlock Classes="detail" Text="{Binding Reason}" />
+                                            </StackPanel>
+                                            <ComboBox Grid.Column="1" Width="170" VerticalAlignment="Top"
+                                                      ItemsSource="{x:Static vm:MissingDownloadItem.Actions}"
+                                                      SelectedIndex="{Binding SelectedActionIndex}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="{Binding WarningsHeader}">
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding Warnings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Border Classes="row">
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </TabItem>
+
+        </TabControl>
+    </DockPanel>
+</Window>

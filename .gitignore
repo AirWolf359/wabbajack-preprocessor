@@ -1,0 +1,25 @@
+# Build results
+bin/
+obj/
+artifacts/
+publish/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Test results
+TestResults/
+*.trx
+
+# NuGet
+*.nupkg
+packages/
+
+# Sample data supplied by the user for local testing — never commit
+samples/
+*.compiler_settings
+*.wabbajack
