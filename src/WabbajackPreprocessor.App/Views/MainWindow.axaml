@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="950" d:DesignHeight="650"
         x:Class="WabbajackPreprocessor.App.Views.MainWindow"
+        x:Name="Root"
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Width="950" Height="650"
@@ -60,21 +61,29 @@
         </Style>
     </Window.Styles>
 
-    <DockPanel Margin="12">
+    <DockPanel>
 
-        <!-- Top: file selection + theme -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open settings file…" InputGesture="Ctrl+O"
+                          Command="{Binding #Root.BrowseCommand}" />
+                <Separator />
+                <MenuItem Header="E_xit" Command="{Binding #Root.ExitCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Settings…" Command="{Binding #Root.OpenSettingsCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_GitHub repository" Command="{Binding #Root.OpenRepoCommand}" />
+                <MenuItem Header="_About…" Command="{Binding #Root.OpenAboutCommand}" />
+            </MenuItem>
+        </Menu>
+
+        <DockPanel Margin="12">
+
+        <!-- Top: file selection -->
         <StackPanel DockPanel.Dock="Top" Spacing="6">
-            <Grid ColumnDefinitions="*,Auto">
-                <TextBlock Grid.Column="0" VerticalAlignment="Center"
-                           Text="Compiler settings file (.compiler_settings)" />
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
-                    <TextBlock Classes="detail" VerticalAlignment="Center" Text="Theme:" />
-                    <ComboBox Width="110"
-                              AutomationProperties.Name="Color theme"
-                              ItemsSource="{x:Static vm:MainViewModel.ThemeOptions}"
-                              SelectedIndex="{Binding SelectedThemeIndex}" />
-                </StackPanel>
-            </Grid>
+            <TextBlock Text="Compiler settings file (.compiler_settings)" />
             <Grid ColumnDefinitions="*,Auto,Auto">
                 <TextBox Grid.Column="0"
                          Text="{Binding SettingsPath}"
@@ -254,5 +263,10 @@
             </TabItem>
 
         </TabControl>
+        </DockPanel>
     </DockPanel>
+
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding #Root.BrowseCommand}" />
+    </Window.KeyBindings>
 </Window>

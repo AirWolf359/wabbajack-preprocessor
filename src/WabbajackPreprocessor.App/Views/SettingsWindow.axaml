@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:WabbajackPreprocessor.App.ViewModels"
+        x:Class="WabbajackPreprocessor.App.Views.SettingsWindow"
+        x:DataType="vm:MainViewModel"
+        Title="Settings"
+        Width="380" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Icon="/Assets/avalonia-logo.ico">
+
+    <StackPanel Margin="16" Spacing="10">
+        <TextBlock FontSize="16" FontWeight="SemiBold" Text="Settings" />
+
+        <Grid ColumnDefinitions="120,*" RowDefinitions="Auto">
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Theme" />
+            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+                      AutomationProperties.Name="Color theme"
+                      ItemsSource="{x:Static vm:MainViewModel.ThemeOptions}"
+                      SelectedIndex="{Binding SelectedThemeIndex}" />
+        </Grid>
+        <TextBlock FontSize="12" Opacity="0.65" TextWrapping="Wrap"
+                   Text="System follows the Windows app mode. Changes apply immediately and are remembered." />
+
+        <Button Content="Close" HorizontalAlignment="Right" Margin="0,8,0,0"
+                IsDefault="True" IsCancel="True" Click="OnCloseClicked" />
+    </StackPanel>
+</Window>
