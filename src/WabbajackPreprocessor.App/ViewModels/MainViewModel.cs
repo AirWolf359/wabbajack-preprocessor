@@ -20,6 +20,9 @@ public partial class MainViewModel : ViewModelBase
     private string _instanceSummary = "";
 
     [ObservableProperty]
+    private string _profilesSummary = "";
+
+    [ObservableProperty]
     private string _statusMessage = "Select a .compiler_settings file and click Analyze.";
 
     [ObservableProperty]
@@ -94,12 +97,20 @@ public partial class MainViewModel : ViewModelBase
             DownloadsHeader = $"No download ({DownloadItems.Count})";
             WarningsHeader = $"Warnings ({Warnings.Count})";
 
-            var profiles = result.ProfilesUsed.Count > 0
-                ? string.Join(", ", result.ProfilesUsed)
-                : "(none found)";
             InstanceSummary =
-                $"{_settings.ModListName} — source: {source} — profiles: {profiles} — " +
+                $"{_settings.ModListName} — source: {source} — " +
                 $"{instance.Mods.Count} mods, {instance.Downloads.Count} downloads";
+
+            // Show what the settings file specifies, flagging profiles missing on disk.
+            string Describe(string? name) =>
+                string.IsNullOrWhiteSpace(name) ? "(none set)"
+                : instance.Profiles.ContainsKey(name) ? name
+                : $"{name} (not found on disk!)";
+            var additional = _settings.AdditionalProfiles.Count > 0
+                ? string.Join(", ", _settings.AdditionalProfiles.Select(Describe))
+                : "none";
+            ProfilesSummary =
+                $"Default profile: {Describe(_settings.Profile)}   •   Additional profiles: {additional}";
 
             HasAnalysis = true;
             var total = StaleItems.Count + DisabledItems.Count + DownloadItems.Count;

@@ -45,6 +45,8 @@
                         Command="{Binding AnalyzeCommand}" Classes="accent" />
             </Grid>
             <TextBlock Classes="detail" Text="{Binding InstanceSummary}" />
+            <TextBlock Text="{Binding ProfilesSummary}" TextWrapping="Wrap"
+                       IsVisible="{Binding HasAnalysis}" />
         </StackPanel>
 
         <!-- Bottom: status + apply -->
