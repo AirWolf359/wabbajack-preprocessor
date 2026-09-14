@@ -33,12 +33,41 @@ public partial class DisabledModItem(DisabledModFinding finding) : ObservableObj
 }
 
 /// <summary>Row for the "no matching download" tab.</summary>
-public partial class MissingDownloadItem(MissingDownloadFinding finding) : ObservableObject
+public partial class MissingDownloadItem : ObservableObject
 {
-    public static readonly string[] Actions = ["Leave as is", "Include", "No match include"];
+    public static readonly string[] Actions = ["Untagged", "Include", "No match include"];
 
-    public string ModName => finding.ModName;
-    public string Reason => finding.Reason;
+    public MissingDownloadItem(MissingDownloadFinding finding)
+    {
+        Finding = finding;
+        // Both tags on one mod is legal but unusual; treating the original index as
+        // "none of the options" makes an apply normalize it to the single selected tag.
+        OriginalActionIndex = finding switch
+        {
+            { TaggedInclude: true, TaggedNoMatchInclude: true } => -1,
+            { TaggedInclude: true } => 1,
+            { TaggedNoMatchInclude: true } => 2,
+            _ => 0,
+        };
+        _selectedActionIndex = finding.TaggedInclude ? 1 : finding.TaggedNoMatchInclude ? 2 : 0;
+    }
+
+    public MissingDownloadFinding Finding { get; }
+
+    public string ModName => Finding.ModName;
+    public string Reason => Finding.Reason;
+
+    public string CurrentStatus => "Currently: " + Finding switch
+    {
+        { TaggedInclude: true, TaggedNoMatchInclude: true } => "Include + No match include",
+        { TaggedInclude: true } => "Include",
+        { TaggedNoMatchInclude: true } => "No match include",
+        _ => "untagged",
+    };
+
+    public int OriginalActionIndex { get; }
+
+    public bool IsChanged => SelectedActionIndex != OriginalActionIndex;
 
     /// <summary>Index into <see cref="Actions"/>.</summary>
     [ObservableProperty]

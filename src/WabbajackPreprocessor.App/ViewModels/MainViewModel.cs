@@ -137,8 +137,17 @@ public partial class MainViewModel : ViewModelBase
         var plan = new SettingsUpdatePlan();
         plan.RemoveEntries.AddRange(StaleItems.Where(i => i.Remove).Select(i => i.Finding));
         plan.MarkAlwaysEnabled.AddRange(DisabledItems.Where(i => i.MarkAlwaysEnabled).Select(i => i.ModName));
-        plan.MarkInclude.AddRange(DownloadItems.Where(i => i.SelectedActionIndex == 1).Select(i => i.ModName));
-        plan.MarkNoMatchInclude.AddRange(DownloadItems.Where(i => i.SelectedActionIndex == 2).Select(i => i.ModName));
+        foreach (var item in DownloadItems.Where(i => i.IsChanged))
+        {
+            if (item.Finding.TaggedInclude && item.SelectedActionIndex != 1)
+                plan.UntagInclude.Add(item.ModName);
+            if (item.Finding.TaggedNoMatchInclude && item.SelectedActionIndex != 2)
+                plan.UntagNoMatchInclude.Add(item.ModName);
+            if (!item.Finding.TaggedInclude && item.SelectedActionIndex == 1)
+                plan.MarkInclude.Add(item.ModName);
+            if (!item.Finding.TaggedNoMatchInclude && item.SelectedActionIndex == 2)
+                plan.MarkNoMatchInclude.Add(item.ModName);
+        }
 
         if (plan.IsEmpty)
         {

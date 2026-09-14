@@ -20,8 +20,11 @@ public sealed record StaleEntry(TagList List, int Index, string Entry, StaleEntr
 /// not yet marked AlwaysEnabled.</summary>
 public sealed record DisabledModFinding(string ModName, string Note);
 
-/// <summary>A mod that will be compiled but has no traceable download archive.</summary>
-public sealed record MissingDownloadFinding(string ModName, string Reason);
+/// <summary>A mod that will be compiled but has no traceable download archive.
+/// The Tagged flags report whether the settings file already carries an exact
+/// <c>mods\&lt;name&gt;</c> entry in the corresponding list.</summary>
+public sealed record MissingDownloadFinding(
+    string ModName, string Reason, bool TaggedInclude, bool TaggedNoMatchInclude);
 
 public sealed class AnalysisResult
 {

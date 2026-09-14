@@ -166,10 +166,17 @@ public static class Analyzer
             if (!compiled)
                 continue;
 
-            // Already tagged: nothing for the user to decide.
-            if (RelPaths.IsCoveredBy(mod.RelativePath, settings.Include)
-                || RelPaths.IsCoveredBy(mod.RelativePath, settings.NoMatchInclude)
-                || RelPaths.IsCoveredBy(mod.RelativePath, settings.Ignore))
+            // Ignored mods never reach the compiled output; nothing to decide.
+            if (RelPaths.IsCoveredBy(mod.RelativePath, settings.Ignore))
+                continue;
+
+            // Exact mods\<name> entries are the mod's current, editable status.
+            // A mod covered only by a broader entry (e.g. a whole parent folder tagged)
+            // can't be untagged individually, so it is still skipped.
+            var taggedInclude = settings.Include.Any(e => RelPaths.AreEqual(e, mod.RelativePath));
+            var taggedNoMatchInclude = settings.NoMatchInclude.Any(e => RelPaths.AreEqual(e, mod.RelativePath));
+            if ((!taggedInclude && RelPaths.IsCoveredBy(mod.RelativePath, settings.Include))
+                || (!taggedNoMatchInclude && RelPaths.IsCoveredBy(mod.RelativePath, settings.NoMatchInclude)))
                 continue;
 
             // Link cascade (see docs/wabbajack-formats.md §4).
@@ -197,7 +204,7 @@ public static class Analyzer
                 : !string.IsNullOrEmpty(installationFile)
                     ? $"Installed from '{installationFile}', which is not in the downloads folder."
                     : "meta.ini records no installation archive.";
-            findings.Add(new MissingDownloadFinding(mod.Name, reason));
+            findings.Add(new MissingDownloadFinding(mod.Name, reason, taggedInclude, taggedNoMatchInclude));
         }
         return findings;
     }
