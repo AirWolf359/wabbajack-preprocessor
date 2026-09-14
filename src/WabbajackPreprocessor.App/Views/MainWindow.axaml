@@ -82,6 +82,25 @@
         <Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">
             <Setter Property="IsVisible" Value="False" />
         </Style>
+
+        <!-- Count badges on the tab labels. Space is reserved from launch (hidden via
+             opacity, which never triggers layout) so tab widths stay constant when
+             counts appear — header-text changes only re-measure the strip on resize. -->
+        <Style Selector="Border.countBadge">
+            <Setter Property="Background" Value="#3A808080" />
+            <Setter Property="CornerRadius" Value="9" />
+            <Setter Property="MinWidth" Value="24" />
+            <Setter Property="Padding" Value="6,1" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <Style Selector="Border.countBadge.active">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="Border.countBadge &gt; TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
     </Window.Styles>
 
     <DockPanel>
@@ -142,7 +161,16 @@
         <!-- Findings -->
         <TabControl Margin="0,10,0,0">
 
-            <TabItem Header="{Binding StaleHeader}">
+            <TabItem AutomationProperties.Name="{Binding StaleHeader}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="7">
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{Binding [TabStalePlain], Source={x:Static loc:L.Instance}}" />
+                        <Border Classes="countBadge" Classes.active="{Binding HasAnalysis}">
+                            <TextBlock Text="{Binding StaleCount}" />
+                        </Border>
+                    </StackPanel>
+                </TabItem.Header>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
                                Text="{Binding [DescStale], Source={x:Static loc:L.Instance}}" />
@@ -193,7 +221,16 @@
                 </DockPanel>
             </TabItem>
 
-            <TabItem Header="{Binding RedundantHeader}">
+            <TabItem AutomationProperties.Name="{Binding RedundantHeader}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="7">
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{Binding [TabRedundantPlain], Source={x:Static loc:L.Instance}}" />
+                        <Border Classes="countBadge" Classes.active="{Binding HasAnalysis}">
+                            <TextBlock Text="{Binding RedundantCount}" />
+                        </Border>
+                    </StackPanel>
+                </TabItem.Header>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
                                Text="{Binding [DescRedundant], Source={x:Static loc:L.Instance}}" />
@@ -221,7 +258,16 @@
                 </DockPanel>
             </TabItem>
 
-            <TabItem Header="{Binding DisabledHeader}">
+            <TabItem AutomationProperties.Name="{Binding DisabledHeader}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="7">
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{Binding [TabDisabledPlain], Source={x:Static loc:L.Instance}}" />
+                        <Border Classes="countBadge" Classes.active="{Binding HasAnalysis}">
+                            <TextBlock Text="{Binding DisabledCount}" />
+                        </Border>
+                    </StackPanel>
+                </TabItem.Header>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
                                Text="{Binding [DescDisabled], Source={x:Static loc:L.Instance}}" />
@@ -248,7 +294,16 @@
                 </DockPanel>
             </TabItem>
 
-            <TabItem Header="{Binding DownloadsHeader}">
+            <TabItem AutomationProperties.Name="{Binding DownloadsHeader}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="7">
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{Binding [TabNoDownloadPlain], Source={x:Static loc:L.Instance}}" />
+                        <Border Classes="countBadge" Classes.active="{Binding HasAnalysis}">
+                            <TextBlock Text="{Binding DownloadCount}" />
+                        </Border>
+                    </StackPanel>
+                </TabItem.Header>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Classes="detail" Margin="0,4,0,6"
                                Text="{Binding [DescNoDownload], Source={x:Static loc:L.Instance}}" />
@@ -279,7 +334,16 @@
                 </DockPanel>
             </TabItem>
 
-            <TabItem Header="{Binding WarningsHeader}">
+            <TabItem AutomationProperties.Name="{Binding WarningsHeader}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="7">
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{Binding [TabWarningsPlain], Source={x:Static loc:L.Instance}}" />
+                        <Border Classes="countBadge" Classes.active="{Binding HasAnalysis}">
+                            <TextBlock Text="{Binding WarningCount}" />
+                        </Border>
+                    </StackPanel>
+                </TabItem.Header>
                 <ScrollViewer>
                     <ItemsControl ItemsSource="{Binding Warnings}">
                         <ItemsControl.ItemTemplate>
