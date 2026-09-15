@@ -19,6 +19,36 @@ public partial class MainWindow : Window
         OpenRepoCommand = new AsyncRelayCommand(async () =>
             await Launcher.LaunchUriAsync(new Uri(AboutWindow.RepoUrl)));
         InitializeComponent();
+        DataContextChanged += OnDataContextChangedHookCounts;
+    }
+
+    // A header content size change does not re-measure the tab strip on its own, so a
+    // badge outgrowing its reserved width would overflow under the neighboring tab.
+    // Explicitly re-measure the tabs whenever the analysis counts change.
+    private void OnDataContextChangedHookCounts(object? sender, EventArgs e)
+    {
+        if (DataContext is not MainViewModel vm)
+            return;
+        vm.PropertyChanged += (_, args) =>
+        {
+            if (args.PropertyName is nameof(MainViewModel.StaleCount)
+                or nameof(MainViewModel.RedundantCount)
+                or nameof(MainViewModel.DisabledCount)
+                or nameof(MainViewModel.DownloadCount)
+                or nameof(MainViewModel.WarningCount)
+                or nameof(MainViewModel.HasAnalysis))
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Post(RemeasureTabs,
+                    Avalonia.Threading.DispatcherPriority.Background);
+            }
+        };
+    }
+
+    private void RemeasureTabs()
+    {
+        foreach (var tab in Tabs.Items.OfType<TabItem>())
+            tab.InvalidateMeasure();
+        (Tabs.Presenter?.Panel as Control)?.InvalidateMeasure();
     }
 
     public IAsyncRelayCommand BrowseCommand { get; }
