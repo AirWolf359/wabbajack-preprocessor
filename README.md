@@ -11,6 +11,8 @@ removed long ago, disabled mods silently drop out of the compiled list, and
 generated content fails compilation because it can't be traced back to a download.
 Wabbajack never cleans any of this up itself. This tool does.
 
+![Wabbajack Preprocessor showing the Stale entries tab, with dead references grouped by tag list and count badges on each tab](docs/screenshot.png)
+
 Point it at your `.compiler_settings` file and it cross-references the settings
 with your Mod Organizer 2 instance — showing which profile is the default and
 which additional profiles are included — then walks you through interactive
